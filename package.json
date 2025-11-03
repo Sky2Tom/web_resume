@@ -1,0 +1,19 @@
+{
+  "name": "personal-portfolio",
+  "version": "1.0.0",
+  "description": "个人主页 - 简约风格",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo 'No build step required'"
+  },
+  "keywords": [
+    "portfolio",
+    "personal",
+    "website"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
+
