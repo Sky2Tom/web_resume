@@ -3,235 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="个人主页 - 简约风格">
-    <title>个人主页</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="汤骁宇 - AI产品经理 | 东南大学硕士">
+    <title>汤骁宇 | Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=1.0">
+    <style>
+        /* Critical CSS - 确保基础样式立即加载 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #000;
+            background: #fff;
+            line-height: 1.6;
+        }
+        .navbar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e5e5;
+            z-index: 1000; 
+            padding: 1rem 0;
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: #525252;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        .hero { 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            padding-top: 80px;
+            background: #fff;
+        }
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+        .hero-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: #000;
+            margin: 1rem 0;
+        }
+        .hero-title {
+            font-size: 1.5rem;
+            color: #525252;
+            margin-bottom: 0.5rem;
+        }
+        .hero-description {
+            color: #525252;
+            line-height: 1.8;
+            margin: 2rem 0;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 导航栏 -->
-        <nav class="navbar">
-            <div class="nav-content">
-                <div class="logo">Portfolio</div>
-                <ul class="nav-links">
-                    <li><a href="#home">首页</a></li>
-                    <li><a href="#about">关于</a></li>
-                    <li><a href="#projects">项目</a></li>
-                    <li><a href="#contact">联系</a></li>
-                </ul>
-                <div class="menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Xiaoyu Tang</div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <!-- 主要内容区域 -->
-        <main>
-            <!-- 首页部分 -->
-            <section id="home" class="hero">
+    <!-- 主要内容 -->
+    <main>
+        <!-- 首页英雄区 -->
+        <section id="home" class="hero">
+            <div class="hero-container">
                 <div class="hero-content">
                     <div class="hero-text">
-                        <h1 class="hero-title">
-                            <span class="greeting">你好, 我是</span>
-                            <span class="name">你的名字</span>
-                        </h1>
-                        <p class="hero-subtitle">全栈开发工程师 | 创意设计师</p>
+                        <p class="hero-greeting">Hello, I'm</p>
+                        <h1 class="hero-name">Xiaoyu Tang</h1>
+                        <p class="hero-title">AI Product Manager</p>
+                        <p class="hero-subtitle">Master's Student at Southeast University</p>
                         <p class="hero-description">
-                            专注于构建优雅、高效的数字化解决方案。
-                            热爱编程，追求简洁与实用的完美结合。
+                            Specializing in AI software products, intelligent systems, and data-driven solutions. 
+                            Passionate about transforming complex technologies into elegant user experiences.
                         </p>
                         <div class="hero-buttons">
-                            <a href="#projects" class="btn btn-primary">查看作品</a>
-                            <a href="#contact" class="btn btn-secondary">联系我</a>
+                            <a href="#contact" class="btn btn-primary">Get in Touch</a>
+                            <a href="#projects" class="btn btn-secondary">View Work</a>
                         </div>
                     </div>
                     <div class="hero-image">
-                        <div class="avatar-placeholder">
-                            <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="150" cy="150" r="150" fill="#f0f0f0"/>
-                                <circle cx="150" cy="120" r="40" fill="#999"/>
-                                <path d="M80 240 C80 200, 100 180, 150 180 C200 180, 220 200, 220 240" fill="#999"/>
-                            </svg>
+                        <div class="image-wrapper">
+                            <img src="loren个人照1.jpg" alt="Xiaoyu Tang" class="profile-image">
                         </div>
                     </div>
                 </div>
                 <div class="scroll-indicator">
-                    <div class="mouse">
-                        <div class="wheel"></div>
-                    </div>
+                    <div class="scroll-line"></div>
+                    <span>Scroll</span>
                 </div>
-            </section>
-
-            <!-- 关于部分 -->
-            <section id="about" class="section">
-                <div class="section-content">
-                    <h2 class="section-title">关于我</h2>
-                    <div class="about-content">
-                        <div class="about-text">
-                            <p>
-                                我是一名充满热情的全栈开发工程师，拥有丰富的Web开发经验。
-                                我喜欢将复杂的问题简化为优雅的解决方案，注重用户体验和代码质量。
-                            </p>
-                            <p>
-                                在我的职业生涯中，我致力于学习新技术，保持对行业趋势的敏感度。
-                                我相信持续学习和实践是成长的关键。
-                            </p>
-                        </div>
-                        <div class="skills">
-                            <h3>技能</h3>
-                            <div class="skills-grid">
-                                <div class="skill-item">
-                                    <span class="skill-name">前端开发</span>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 90%"></div>
-                                    </div>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">后端开发</span>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 85%"></div>
-                                    </div>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">UI/UX设计</span>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 80%"></div>
-                                    </div>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">系统架构</span>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 75%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 项目部分 -->
-            <section id="projects" class="section section-alt">
-                <div class="section-content">
-                    <h2 class="section-title">精选项目</h2>
-                    <div class="projects-grid">
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="project-placeholder">项目图片</div>
-                            </div>
-                            <div class="project-info">
-                                <h3 class="project-title">项目名称 1</h3>
-                                <p class="project-description">
-                                    这是一个优秀的项目描述，展示了项目的核心功能和特点。
-                                </p>
-                                <div class="project-tags">
-                                    <span class="tag">React</span>
-                                    <span class="tag">Node.js</span>
-                                    <span class="tag">MongoDB</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="project-link">查看演示</a>
-                                    <a href="#" class="project-link">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="project-placeholder">项目图片</div>
-                            </div>
-                            <div class="project-info">
-                                <h3 class="project-title">项目名称 2</h3>
-                                <p class="project-description">
-                                    另一个令人印象深刻的项目，展示了不同的技术栈和解决方案。
-                                </p>
-                                <div class="project-tags">
-                                    <span class="tag">Vue.js</span>
-                                    <span class="tag">Python</span>
-                                    <span class="tag">PostgreSQL</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="project-link">查看演示</a>
-                                    <a href="#" class="project-link">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="project-placeholder">项目图片</div>
-                            </div>
-                            <div class="project-info">
-                                <h3 class="project-title">项目名称 3</h3>
-                                <p class="project-description">
-                                    创新的解决方案，结合了最新的技术趋势和最佳实践。
-                                </p>
-                                <div class="project-tags">
-                                    <span class="tag">TypeScript</span>
-                                    <span class="tag">GraphQL</span>
-                                    <span class="tag">AWS</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="project-link">查看演示</a>
-                                    <a href="#" class="project-link">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 联系部分 -->
-            <section id="contact" class="section">
-                <div class="section-content">
-                    <h2 class="section-title">联系我</h2>
-                    <div class="contact-content">
-                        <div class="contact-info">
-                            <p class="contact-text">
-                                如果你对我的作品感兴趣，或者想要合作，欢迎随时联系我。
-                            </p>
-                            <div class="contact-methods">
-                                <a href="mailto:your.email@example.com" class="contact-item">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                        <polyline points="22,6 12,13 2,6"/>
-                                    </svg>
-                                    <span>your.email@example.com</span>
-                                </a>
-                                <a href="https://github.com/yourusername" class="contact-item" target="_blank" rel="noopener">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-                                    </svg>
-                                    <span>GitHub</span>
-                                </a>
-                                <a href="https://linkedin.com/in/yourusername" class="contact-item" target="_blank" rel="noopener">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                                        <rect x="2" y="9" width="4" height="12"/>
-                                        <circle cx="4" cy="4" r="2"/>
-                                    </svg>
-                                    <span>LinkedIn</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- 页脚 -->
-        <footer class="footer">
-            <div class="footer-content">
-                <p>&copy; 2024 个人主页. 保留所有权利.</p>
-                <p class="footer-note">使用简约的设计理念构建</p>
             </div>
-        </footer>
-    </div>
+        </section>
+
+        <!-- 关于我 -->
+        <section id="about" class="section">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-number">01</span>
+                    <h2 class="section-title">About Me</h2>
+                </div>
+                <div class="about-content">
+                    <div class="about-image">
+                        <img src="loren学术会议图.jpg" alt="Academic Conference" class="conference-image">
+                    </div>
+                    <div class="about-text">
+                        <div class="about-intro">
+                            <p>
+                                I am a Master's student at Southeast University, majoring in Artificial Intelligence 
+                                and Information Systems Design. With a strong background in AI product management 
+                                and software development, I have worked at leading companies like NIO and Chuangchao Technology.
+                            </p>
+                            <p>
+                                My expertise spans across AI algorithm development, data analysis, project management, 
+                                and product design. I hold a PMP certification and have published research papers in 
+                                top-tier conferences including IROS 2024.
+                            </p>
+                        </div>
+                        <div class="about-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Education</span>
+                                <span class="detail-value">Master's (保送) - Southeast University</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Major</span>
+                                <span class="detail-value">AI + Information Systems Design</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Location</span>
+                                <span class="detail-value">Nanjing, China</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 技能 -->
+        <section id="skills" class="section section-dark">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-number">02</span>
+                    <h2 class="section-title">Skills & Expertise</h2>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">Technical Skills</h3>
+                        <ul class="skill-list">
+                            <li>Python (PyTorch, Pandas, NumPy)</li>
+                            <li>C Language</li>
+                            <li>SQL & Database Management</li>
+                            <li>Embedded Systems Development</li>
+                            <li>LLM & Transformer Architecture</li>
+                            <li>Machine Learning & Deep Learning</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">Product & Management</h3>
+                        <ul class="skill-list">
+                            <li>Product Design & Requirements Analysis</li>
+                            <li>Agile Development Lifecycle</li>
+                            <li>Project Management (PMP Certified)</li>
+                            <li>System Design & Architecture</li>
+                            <li>Figma & UI/UX Design</li>
+                            <li>Feishu & Collaboration Tools</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">Languages & Certifications</h3>
+                        <ul class="skill-list">
+                            <li>English: CET-4 (648), CET-6 (588)</li>
+                            <li>PMP International Project Management</li>
+                            <li>Computer Level 2 & 3 Certifications</li>
+                            <li>Microsoft Office Suite</li>
+                            <li>Enterprise Architecture</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 工作经历 -->
+        <section id="experience" class="section">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-number">03</span>
+                    <h2 class="section-title">Work Experience</h2>
+                </div>
+                <div class="experience-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2024.02 - 2025.02</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-company">Chuangchao Technology Co., Ltd.</h3>
+                            <p class="timeline-position">AI Software Product Manager + Embedded Development Engineer</p>
+                            <ul class="timeline-details">
+                                <li>Developed intelligent train loading system with real-time data processing and Modbus (RTU) serial communication</li>
+                                <li>Built digital twin AI software for train loading system with machine learning-based time series monitoring</li>
+                                <li>Integrated hardware sensors (level sensors, axle counters, LiDAR, RFID) for signal acquisition</li>
+                                <li>Technologies: Python (PyTorch), C, SQL Server, Excel, TIA Portal</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2022.10 - 2023.10</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-company">NIO (蔚来汽车) - Shanghai</h3>
+                            <p class="timeline-position">Energy Cloud AI Software Product Manager (NIO Power)</p>
+                            <ul class="timeline-details">
+                                <li>Developed NIO Vehicle Intelligent Operations Assistant using generative dialogue pre-trained large models and RAG technology</li>
+                                <li>Built NIO Data Intelligent Knowledge Base system integrating BERT, GPT, knowledge graphs, and business rules</li>
+                                <li>Implemented multi-model parallel integration with NIO's internal large models</li>
+                                <li>Technologies: Python, Figma, Feishu (PRD documentation)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 项目与研究 -->
+        <section id="projects" class="section section-dark">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-number">04</span>
+                    <h2 class="section-title">Projects & Research</h2>
+                </div>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-header">
+                            <span class="project-type">Research</span>
+                            <h3 class="project-title">IROS 2024 Publication</h3>
+                        </div>
+                        <p class="project-description">
+                            Participated in AI autonomous driving project at Peking University's Automation School, 
+                            published research in top-tier conference IROS 2024.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI</span>
+                            <span class="tag">Autonomous Driving</span>
+                            <span class="tag">Research</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <span class="project-type">Research</span>
+                            <h3 class="project-title">Cambridge ML Project</h3>
+                        </div>
+                        <p class="project-description">
+                            Participated in machine learning project at Cambridge University's Complex Systems Laboratory 
+                            under Professor Pitro.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Machine Learning</span>
+                            <span class="tag">Cambridge</span>
+                            <span class="tag">Research</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <span class="project-type">Competition</span>
+                            <h3 class="project-title">Huawei Big Data Challenge</h3>
+                        </div>
+                        <p class="project-description">
+                            Won National First Prize in Huawei Big Data Challenge. 
+                            Developed data analysis solutions using Python (pandas, numpy, torch).
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Data Science</span>
+                            <span class="tag">Python</span>
+                            <span class="tag">Competition</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <span class="project-type">Research</span>
+                            <h3 class="project-title">Financial Data Analysis</h3>
+                        </div>
+                        <p class="project-description">
+                            First-author published paper on financial data analysis, 
+                            predicting investor portfolio behavior.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Finance</span>
+                            <span class="tag">Data Analysis</span>
+                            <span class="tag">Research</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <span class="project-type">Patent</span>
+                            <h3 class="project-title">Multi-Neural Network Anomaly Detection</h3>
+                        </div>
+                        <p class="project-description">
+                            First-author granted patent: "A Method for Anomaly Detection in Operations Data 
+                            Based on Multiple Neural Networks".
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Neural Networks</span>
+                            <span class="tag">Anomaly Detection</span>
+                            <span class="tag">Patent</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <span class="project-type">Patent</span>
+                            <h3 class="project-title">U-Net Image Segmentation</h3>
+                        </div>
+                        <p class="project-description">
+                            Third-author granted patent: "An Auxiliary Optimization Image Segmentation Algorithm 
+                            Based on U-Net".
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Image Processing</span>
+                            <span class="tag">U-Net</span>
+                            <span class="tag">Patent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 荣誉与成就 -->
+        <section id="honors" class="section">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-number">05</span>
+                    <h2 class="section-title">Honors & Achievements</h2>
+                </div>
+                <div class="honors-grid">
+                    <div class="honor-item">
+                        <div class="honor-icon">🏆</div>
+                        <h3 class="honor-title">National Scholarship</h3>
+                        <p class="honor-description">National level recognition for academic excellence</p>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-icon">⭐</div>
+                        <h3 class="honor-title">Outstanding Student of Jiangsu Province</h3>
+                        <p class="honor-description">Provincial level recognition</p>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-icon">🎓</div>
+                        <h3 class="honor-title">Outstanding Graduate of Jiangsu Province</h3>
+                        <p class="honor-description">Provincial level recognition</p>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-icon">🌍</div>
+                        <h3 class="honor-title">Cambridge University Exchange</h3>
+                        <p class="honor-description">Outstanding graduate in international exchange program</p>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-icon">💰</div>
+                        <h3 class="honor-title">People's Special Scholarship</h3>
+                        <p class="honor-description">Awarded for three consecutive years</p>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-icon">👔</div>
+                        <h3 class="honor-title">Outstanding Student Cadre</h3>
+                        <p class="honor-description">University level recognition for leadership</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系方式 -->
+        <section id="contact" class="section section-dark">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-number">06</span>
+                    <h2 class="section-title">Get In Touch</h2>
+                </div>
+                <div class="contact-content">
+                    <p class="contact-intro">
+                        I'm always open to discussing new opportunities, interesting projects, 
+                        or just having a conversation about AI, technology, and innovation.
+                    </p>
+                    <div class="contact-methods">
+                        <a href="mailto:xiaoyutang_loren@163.com" class="contact-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            <span>xiaoyutang_loren@163.com</span>
+                        </a>
+                        <a href="tel:15151349928" class="contact-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            <span>+86 151 5134 9928</span>
+                        </a>
+                        <div class="contact-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            <span>Nanjing, China</span>
+                        </div>
+                    </div>
+                    <div class="resume-download">
+                        <a href="汤骁宇-东南大学-产品简历.pdf" download class="btn btn-primary">Download Resume (Product)</a>
+                        <a href="汤骁宇-东南大学-简历.pdf" download class="btn btn-secondary">Download Resume (General)</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Xiaoyu Tang. All rights reserved.</p>
+            <p class="footer-note">Designed with attention to detail</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
 </html>
-
