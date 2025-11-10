@@ -3,7 +3,7 @@
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     // Smooth scroll for navigation links
-    const navLinks = document.querySelectorAll('.nav-link');
+    const navLinks = document.querySelectorAll('.nav-link, .sidebar-link');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Active navigation link on scroll
     const sections = document.querySelectorAll('.section, .hero');
     const navItems = document.querySelectorAll('.nav-link');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
     
     function updateActiveNav() {
         let current = '';
@@ -40,9 +41,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
+        // 更新顶部导航
         navItems.forEach(item => {
             item.classList.remove('active');
             if (item.getAttribute('href') === `#${current}`) {
+                item.classList.add('active');
+            }
+        });
+        
+        // 更新左侧导航
+        sidebarLinks.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('data-section') === current) {
                 item.classList.add('active');
             }
         });
@@ -50,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     window.addEventListener('scroll', updateActiveNav);
     updateActiveNav();
+
 
     // Mobile menu toggle
     const menuToggle = document.querySelector('.menu-toggle');
@@ -170,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.overflow = 'hidden';
                 this.appendChild(ripple);
                 
-                setTimeout(() => {
+            setTimeout(() => {
                     ripple.remove();
                 }, 600);
             }
@@ -279,4 +290,110 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.opacity = '1';
         }, 100);
     });
+
+    // ============================================
+    // 浏览次数和点赞功能
+    // ============================================
+    // 浏览次数统计
+    function updateViewCount() {
+        // 检查localStorage中是否已有数据
+        const storedViewCount = localStorage.getItem('viewCount');
+        let viewCount;
+        
+        // 检查是否已经初始化过（使用新的key来标记）
+        const isInitialized = localStorage.getItem('viewCountInitialized');
+        
+        if (!isInitialized || storedViewCount === null || storedViewCount === undefined) {
+            // 首次访问或未初始化，设置为初始值6689
+            viewCount = 6689;
+            localStorage.setItem('viewCount', '6689');
+            localStorage.setItem('viewCountInitialized', 'true');
+        } else {
+            // 如果已有数据，检查是否小于初始值6689
+            viewCount = parseInt(storedViewCount);
+            
+            // 如果当前值小于6689，重置为6689（修复旧数据）
+            if (viewCount < 6689) {
+                viewCount = 6689;
+                localStorage.setItem('viewCount', '6689');
+            }
+            
+            // 每次访问增加1
+            viewCount++;
+            localStorage.setItem('viewCount', viewCount.toString());
+        }
+        
+        // 更新显示
+        const viewCountElement = document.getElementById('viewCountValue');
+        if (viewCountElement) {
+            viewCountElement.textContent = viewCount.toLocaleString();
+        }
+    }
+
+    // 点赞功能
+    function initLikeButton() {
+        const likeButton = document.getElementById('likeButton');
+        const likeCountElement = document.getElementById('likeCountValue');
+        
+        if (!likeButton || !likeCountElement) return;
+
+        // 从 localStorage 读取点赞状态和数量
+        let likeCount = parseInt(localStorage.getItem('likeCount') || '628');
+        const hasLiked = localStorage.getItem('hasLiked') === 'true';
+        
+        // 如果localStorage中没有数据，设置为初始值628
+        if (!localStorage.getItem('likeCount')) {
+            likeCount = 628;
+            localStorage.setItem('likeCount', '628');
+        } else {
+            // 如果已有数据，确保至少为628
+            if (likeCount < 628) {
+                likeCount = 628;
+                localStorage.setItem('likeCount', '628');
+            }
+        }
+        
+        // 确保显示为628（如果当前值小于628）
+        if (likeCount < 628) {
+            likeCount = 628;
+            localStorage.setItem('likeCount', '628');
+        }
+        
+        // 更新显示
+        likeCountElement.textContent = likeCount.toLocaleString();
+        if (hasLiked) {
+            likeButton.classList.add('liked');
+        }
+
+        // 点击事件
+        likeButton.addEventListener('click', function() {
+            const isLiked = likeButton.classList.contains('liked');
+            
+            if (isLiked) {
+                // 取消点赞
+                likeButton.classList.remove('liked');
+                likeCount = Math.max(0, likeCount - 1);
+                localStorage.setItem('hasLiked', 'false');
+            } else {
+                // 点赞
+                likeButton.classList.add('liked');
+                likeCount++;
+                localStorage.setItem('hasLiked', 'true');
+                
+                // 添加点赞动画效果
+                likeButton.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    likeButton.style.transform = 'scale(1)';
+                }, 200);
+            }
+            
+            // 更新数量
+            likeCountElement.textContent = likeCount.toLocaleString();
+            localStorage.setItem('likeCount', likeCount.toString());
+        });
+    }
+
+    // 初始化
+    updateViewCount();
+    initLikeButton();
 });
