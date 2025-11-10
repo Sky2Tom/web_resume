@@ -83,19 +83,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Navbar background on scroll
+    // Navbar background on scroll - 保持颜色不变
     const navbar = document.querySelector('.navbar');
     let lastScroll = 0;
     
     window.addEventListener('scroll', function() {
         const currentScroll = window.pageYOffset;
         
+        // 保持背景颜色不变，只调整阴影
         if (currentScroll > 100) {
-            navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
-            navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.05)';
+            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.4)';
         } else {
-            navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-            navbar.style.boxShadow = 'none';
+            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
         }
         
         lastScroll = currentScroll;
