@@ -10,7 +10,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 从localStorage加载链接
     function loadLinks() {
-        const links = JSON.parse(localStorage.getItem('links') || '[]');
+        let links = [];
+        try {
+            const storedLinks = localStorage.getItem('links');
+            if (storedLinks) {
+                links = JSON.parse(storedLinks);
+            }
+        } catch (e) {
+            console.error('加载链接数据失败:', e);
+            links = [];
+        }
+        
+        // 确保links是数组
+        if (!Array.isArray(links)) {
+            console.warn('链接数据格式不正确，重置为空数组');
+            links = [];
+        }
+        
         displayLinks(links);
     }
     
@@ -60,38 +76,71 @@ document.addEventListener('DOMContentLoaded', function() {
     // 保存链接
     function saveLink() {
         const title = linkTitleInput.value.trim();
-        const url = linkUrlInput.value.trim();
+        let url = linkUrlInput.value.trim();
         
         if (!title || !url) {
             alert('请填写标题和URL！');
             return;
         }
         
-        // 验证URL格式
+        // 验证并规范化URL格式
+        let finalUrl = url;
         try {
             new URL(url);
+            // URL格式正确，直接使用
+            finalUrl = url;
         } catch (e) {
             // 如果不是完整URL，尝试添加https://
-            const urlWithProtocol = url.startsWith('http://') || url.startsWith('https://') 
-                ? url 
-                : 'https://' + url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                finalUrl = 'https://' + url;
+            } else {
+                finalUrl = url;
+            }
+            
+            // 再次验证
             try {
-                new URL(urlWithProtocol);
-                linkUrlInput.value = urlWithProtocol;
+                new URL(finalUrl);
             } catch (e2) {
                 alert('请输入有效的URL！');
                 return;
             }
         }
         
-        const links = JSON.parse(localStorage.getItem('links') || '[]');
-        links.push({
+        // 从localStorage读取现有链接
+        let links = [];
+        try {
+            const storedLinks = localStorage.getItem('links');
+            if (storedLinks) {
+                links = JSON.parse(storedLinks);
+            }
+        } catch (e) {
+            console.error('读取链接数据失败:', e);
+            links = [];
+        }
+        
+        // 确保links是数组
+        if (!Array.isArray(links)) {
+            links = [];
+        }
+        
+        // 添加新链接
+        const newLink = {
             id: Date.now(),
             title: title,
-            url: linkUrlInput.value.trim()
-        });
+            url: finalUrl
+        };
         
-        localStorage.setItem('links', JSON.stringify(links));
+        links.push(newLink);
+        
+        // 保存到localStorage
+        try {
+            localStorage.setItem('links', JSON.stringify(links));
+            console.log('链接已保存:', newLink);
+        } catch (e) {
+            console.error('保存链接失败:', e);
+            alert('保存失败，请重试！');
+            return;
+        }
         
         // 清空表单
         linkTitleInput.value = '';
@@ -107,9 +156,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // 删除链接
     function deleteLink(linkId) {
         if (confirm('确定要删除这个链接吗？')) {
-            const links = JSON.parse(localStorage.getItem('links') || '[]');
+            let links = [];
+            try {
+                const storedLinks = localStorage.getItem('links');
+                if (storedLinks) {
+                    links = JSON.parse(storedLinks);
+                }
+            } catch (e) {
+                console.error('读取链接数据失败:', e);
+                links = [];
+            }
+            
+            // 确保links是数组
+            if (!Array.isArray(links)) {
+                links = [];
+            }
+            
             const filteredLinks = links.filter(link => String(link.id) !== String(linkId));
-            localStorage.setItem('links', JSON.stringify(filteredLinks));
+            
+            try {
+                localStorage.setItem('links', JSON.stringify(filteredLinks));
+                console.log('链接已删除:', linkId);
+            } catch (e) {
+                console.error('保存链接失败:', e);
+                alert('删除失败，请重试！');
+                return;
+            }
+            
             loadLinks();
         }
     }
