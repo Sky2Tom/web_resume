@@ -25,17 +25,34 @@
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     
-    /* Spacing */
-    --spacing-xs: 0.5rem;
-    --spacing-sm: 1rem;
-    --spacing-md: 2rem;
-    --spacing-lg: 4rem;
-    --spacing-xl: 6rem;
+    /* Base Font Size - 自适应 */
+    --base-font-size: clamp(14px, 1.5vw, 16px);
+    
+    /* Spacing - 响应式间距 */
+    --spacing-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+    --spacing-sm: clamp(0.75rem, 1.5vw, 1rem);
+    --spacing-md: clamp(1.5rem, 3vw, 2rem);
+    --spacing-lg: clamp(3rem, 6vw, 4rem);
+    --spacing-xl: clamp(4rem, 8vw, 6rem);
+    
+    /* Sidebar Width - 响应式 */
+    --sidebar-width: clamp(180px, 15vw, 210px);
+    
+    /* Container Max Width - 响应式 */
+    --container-max-width: clamp(1200px, 90vw, 1400px);
     
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-base: 0.3s ease;
     --transition-slow: 0.5s ease;
+    
+    /* Breakpoints (for reference in comments) */
+    /* --breakpoint-xs: 320px; */
+    /* --breakpoint-sm: 480px; */
+    /* --breakpoint-md: 768px; */
+    /* --breakpoint-lg: 1024px; */
+    /* --breakpoint-xl: 1280px; */
+    /* --breakpoint-2xl: 1536px; */
 }
 
 html {
@@ -47,7 +64,7 @@ body {
     color: var(--color-black);
     background-color: var(--color-white);
     line-height: 1.7;
-    font-size: 16px;
+    font-size: var(--base-font-size);
     overflow-x: hidden;
     position: relative;
     display: flex;
@@ -134,7 +151,7 @@ strong, b {
 .navbar {
     position: fixed;
     top: 0;
-    left: 280px;
+    left: var(--sidebar-width);
     right: 0;
     background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
     backdrop-filter: blur(10px);
@@ -152,11 +169,11 @@ strong, b {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 280px;
+    width: var(--sidebar-width);
     background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 999;
-    padding-top: 100px;
+    padding-top: clamp(80px, 10vh, 100px);
     transition: transform 0.3s ease, width 0.3s ease;
     overflow-y: auto;
     overflow-x: hidden;
@@ -174,7 +191,7 @@ strong, b {
 
 .sidebar-header,
 .sidebar-footer {
-    padding: 0 clamp(2rem, 4vw, 2.5rem);
+    padding: 0 clamp(1rem, 2vw, 1.5rem);
     margin-bottom: clamp(1.5rem, 3vw, 2rem);
 }
 
@@ -193,7 +210,7 @@ strong, b {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding: 0 clamp(1.5rem, 3vw, 2rem);
+    padding: 0 clamp(0.75rem, 1.5vw, 1rem);
     margin: 0;
 }
 
@@ -206,7 +223,7 @@ strong, b {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.25rem);
+    padding: clamp(0.75rem, 1.5vw, 1rem) clamp(0.75rem, 1.5vw, 1rem);
     text-decoration: none;
     color: rgba(255, 255, 255, 0.7);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -215,8 +232,8 @@ strong, b {
     z-index: 2;
     font-weight: 400;
     border-radius: 0;
-    overflow: hidden;
-    gap: clamp(0.75rem, 1.5vw, 1rem);
+    overflow: visible;
+    gap: clamp(0.5rem, 1vw, 0.75rem);
 }
 
 .sidebar-link::before {
@@ -235,7 +252,7 @@ strong, b {
 .sidebar-link:hover {
     color: rgba(255, 255, 255, 0.95);
     background-color: rgba(255, 255, 255, 0.08);
-    padding-left: clamp(1.5rem, 3vw, 1.75rem);
+    padding-left: clamp(1rem, 2vw, 1.25rem);
 }
 
 .sidebar-link:hover::before {
@@ -246,7 +263,7 @@ strong, b {
     color: rgba(255, 255, 255, 0.95);
     background-color: rgba(255, 255, 255, 0.12);
     font-weight: 500;
-    padding-left: clamp(1.5rem, 3vw, 1.75rem);
+    padding-left: clamp(1rem, 2vw, 1.25rem);
 }
 
 .sidebar-link.active::before {
@@ -257,8 +274,8 @@ strong, b {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     color: rgba(255, 255, 255, 0.6);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
@@ -284,14 +301,16 @@ strong, b {
 
 .sidebar-text {
     font-family: var(--font-sans);
-    font-size: clamp(0.85rem, 1.3vw, 0.95rem);
+    font-size: clamp(0.75rem, 1.2vw, 0.85rem);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     font-weight: inherit;
     white-space: nowrap;
     flex: 1;
     transition: all 0.3s ease;
     margin-right: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .sidebar-line {
@@ -313,14 +332,14 @@ strong, b {
 
 /* 主内容区域调整 */
 .main-content-wrapper {
-    margin-left: 280px;
-    width: calc(100% - 280px);
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
     transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
 
 .nav-container {
-    max-width: 1400px;
+    max-width: var(--container-max-width);
     margin: 0 auto;
     padding: 0 var(--spacing-md);
     display: flex;
@@ -404,7 +423,7 @@ strong, b {
 }
 
 .hero-container {
-    max-width: 1400px;
+    max-width: var(--container-max-width);
     margin: 0 auto;
     padding: 0 clamp(1.5rem, 4vw, 3rem);
     width: 100%;
@@ -845,7 +864,7 @@ strong, b {
 }
 
 .section-container {
-    max-width: 1400px;
+    max-width: var(--container-max-width);
     margin: 0 auto;
     padding: 0 clamp(1.5rem, 4vw, 3rem);
 }
@@ -1344,7 +1363,7 @@ strong, b {
 }
 
 .footer-container {
-    max-width: 1400px;
+    max-width: var(--container-max-width);
     margin: 0 auto;
     padding: 0 var(--spacing-md);
 }
@@ -1656,54 +1675,7 @@ strong, b {
 }
 
 
-/* 响应式设计 */
-/* 平板设备 (768px - 1024px) */
-@media (max-width: 1024px) {
-    .navbar {
-        left: 0;
-        padding: var(--spacing-xs) 0;
-    }
-    
-    .sidebar-nav {
-        width: 0;
-        transform: translateX(-100%);
-    }
-    
-    
-    .main-content-wrapper {
-        margin-left: 0;
-    width: 100%;
-    }
-    
-    .section-container {
-        padding: 0 var(--spacing-sm);
-    }
-    
-    .hero-name {
-        font-size: 3.5rem;
-    }
-    
-    .section-title {
-        font-size: 2.5rem;
-    }
-    
-    .about-content {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-md);
-    }
-    
-    .skills-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .projects-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .honors-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
+/* 响应式设计 - 已整合到全面响应式系统中 */
 
 /* 移动设备 (最大768px) */
 @media (max-width: 768px) {
@@ -1999,5 +1971,231 @@ strong, b {
         min-width: 44px;
         min-height: 44px;
     }
+}
+
+/* ============================================
+   全面响应式自适应系统
+   ============================================ */
+
+/* 超大屏幕 (1920px+) - 4K显示器等 */
+@media (min-width: 1920px) {
+    :root {
+        --sidebar-width: 240px;
+        --container-max-width: 1600px;
+        --base-font-size: 18px;
+    }
+    
+    .hero-name {
+        font-size: clamp(4rem, 6vw, 5.5rem);
+    }
+    
+    .section-title {
+        font-size: clamp(3rem, 4vw, 3.5rem);
+    }
+}
+
+/* 大屏幕 (1536px - 1919px) - 大桌面显示器 */
+@media (min-width: 1536px) and (max-width: 1919px) {
+    :root {
+        --sidebar-width: 220px;
+        --container-max-width: 1500px;
+    }
+}
+
+/* 中等大屏幕 (1280px - 1535px) - 标准桌面 */
+@media (min-width: 1280px) and (max-width: 1535px) {
+    :root {
+        --sidebar-width: 200px;
+        --container-max-width: 1300px;
+    }
+}
+
+/* 标准屏幕 (1024px - 1279px) - 小桌面/大平板 */
+@media (min-width: 1024px) and (max-width: 1279px) {
+    :root {
+        --sidebar-width: 190px;
+        --container-max-width: 1200px;
+    }
+    
+    .hero-name {
+        font-size: clamp(3rem, 5vw, 4rem);
+    }
+    
+    .section-title {
+        font-size: clamp(2.25rem, 3.5vw, 2.75rem);
+    }
+}
+
+/* 平板横屏 (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    :root {
+        --sidebar-width: 0;
+    }
+    
+    .navbar {
+        left: 0;
+    }
+    
+    .main-content-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .honors-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 平板竖屏/大手机 (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+    :root {
+        --sidebar-width: 0;
+        --base-font-size: 15px;
+    }
+    
+    .navbar {
+        left: 0;
+    }
+    
+    .main-content-wrapper {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 60px;
+    }
+    
+    .hero-name {
+        font-size: clamp(2.25rem, 6vw, 2.75rem);
+    }
+    
+    .section-title {
+        font-size: clamp(1.875rem, 5vw, 2.25rem);
+    }
+    
+    .projects-grid,
+    .honors-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 小手机 (320px - 480px) */
+@media (min-width: 320px) and (max-width: 480px) {
+    :root {
+        --sidebar-width: 0;
+        --base-font-size: 14px;
+        --spacing-xs: 0.375rem;
+        --spacing-sm: 0.75rem;
+        --spacing-md: 1.25rem;
+        --spacing-lg: 2.5rem;
+    }
+    
+    .navbar {
+        left: 0;
+        padding: 8px 0;
+    }
+    
+    .main-content-wrapper {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 50px;
+    }
+    
+    .hero-name {
+        font-size: clamp(1.75rem, 8vw, 2.25rem);
+    }
+    
+    .section-title {
+        font-size: clamp(1.5rem, 6vw, 1.875rem);
+    }
+}
+
+/* 超小屏幕 (小于320px) */
+@media (max-width: 319px) {
+    :root {
+        --base-font-size: 13px;
+        --spacing-xs: 0.25rem;
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+    }
+    
+    .hero-name {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+    }
+}
+
+/* 高分辨率屏幕优化 (Retina等) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* 优化图片显示 */
+    img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .navbar,
+    .sidebar-nav {
+        display: none;
+    }
+    
+    .main-content-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+    }
+}
+
+/* 减少动画（用户偏好） */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+    :root {
+        --color-gray-400: #666666;
+        --color-gray-500: #555555;
+    }
+    
+    .sidebar-link {
+        border: 1px solid transparent;
+    }
+    
+    .sidebar-link:hover,
+    .sidebar-link.active {
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* 深色模式支持（如果将来需要） */
+@media (prefers-color-scheme: dark) {
+    /* 当前设计已经是深色导航栏，这里可以添加更多深色模式优化 */
 }
 
