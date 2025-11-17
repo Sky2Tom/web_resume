@@ -10,7 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=1.0">
+    <link rel="stylesheet" href="styles.css?v=1.2">
+    <script src="language.js"></script>
     <style>
         /* Critical CSS - 确保基础样式立即加载 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -95,19 +96,48 @@
         <!-- 导航栏 -->
         <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">Xiaoyu Tang</div>
+            <div class="nav-left">
+                <div class="logo">Xiaoyu Tang</div>
+            </div>
                 <ul class="nav-links">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#experience" class="nav-link">Experience</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#blog" class="nav-link">My Blog</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#home" class="nav-link" data-i18n="nav.home">Home</a></li>
+                <li><a href="#about" class="nav-link" data-i18n="nav.about">About</a></li>
+                <li><a href="#experience" class="nav-link" data-i18n="nav.experience">Experience</a></li>
+                <li><a href="#projects" class="nav-link" data-i18n="nav.projects">Projects</a></li>
+                <li><a href="#blog" class="nav-link" data-i18n="nav.blog">My Blog</a></li>
+                <li><a href="#contact" class="nav-link" data-i18n="nav.contact">Contact</a></li>
                 </ul>
-                <div class="menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <div class="nav-right">
+                    <a href="chatbot.html" class="chatbot-btn" title="客服机器人">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            <line x1="9" y1="10" x2="15" y2="10"></line>
+                            <line x1="12" y1="7" x2="12" y2="13"></line>
+                        </svg>
+                    </a>
+                    <div class="lang-toggle-bar" id="langToggleBar">
+                        <button class="lang-btn" data-lang="zh" id="langBtnZh" title="中文">
+                            <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <span class="lang-label">中文</span>
+                        </button>
+                        <button class="lang-btn" data-lang="en" id="langBtnEn" title="English">
+                            <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <span class="lang-label">EN</span>
+                        </button>
+                    </div>
+                    <div class="menu-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -127,7 +157,7 @@
                         </svg>
                     </span>
                     <span class="sidebar-number">00</span>
-                    <span class="sidebar-text">Home</span>
+                    <span class="sidebar-text" data-i18n="nav.home">Home</span>
                     <span class="sidebar-line"></span>
                 </a></li>
                 <li><a href="#about" class="sidebar-link" data-section="about">
@@ -138,7 +168,7 @@
                         </svg>
                     </span>
                     <span class="sidebar-number">01</span>
-                    <span class="sidebar-text">About</span>
+                    <span class="sidebar-text" data-i18n="nav.about">About</span>
                     <span class="sidebar-line"></span>
                 </a></li>
                 <li><a href="#skills" class="sidebar-link" data-section="skills">
@@ -148,7 +178,7 @@
                         </svg>
                     </span>
                     <span class="sidebar-number">02</span>
-                    <span class="sidebar-text">Skills</span>
+                    <span class="sidebar-text" data-i18n="nav.skills">Skills</span>
                     <span class="sidebar-line"></span>
                 </a></li>
                 <li><a href="#experience" class="sidebar-link" data-section="experience">
@@ -159,7 +189,7 @@
                         </svg>
                     </span>
                     <span class="sidebar-number">03</span>
-                    <span class="sidebar-text">Experience</span>
+                    <span class="sidebar-text" data-i18n="nav.experience">Experience</span>
                     <span class="sidebar-line"></span>
                 </a></li>
                 <li><a href="#projects" class="sidebar-link" data-section="projects">
@@ -169,7 +199,7 @@
                         </svg>
                     </span>
                     <span class="sidebar-number">04</span>
-                    <span class="sidebar-text">Projects</span>
+                    <span class="sidebar-text" data-i18n="nav.projects">Projects</span>
                     <span class="sidebar-line"></span>
                 </a></li>
                 <li><a href="#honors" class="sidebar-link" data-section="honors">
@@ -179,7 +209,7 @@
                         </svg>
                     </span>
                     <span class="sidebar-number">06</span>
-                    <span class="sidebar-text">Honors</span>
+                    <span class="sidebar-text" data-i18n="nav.honors">Honors</span>
                     <span class="sidebar-line"></span>
                 </a></li>
                 <li><a href="#contact" class="sidebar-link" data-section="contact">
@@ -190,7 +220,7 @@
                         </svg>
                     </span>
                     <span class="sidebar-number">07</span>
-                    <span class="sidebar-text">Contact</span>
+                    <span class="sidebar-text" data-i18n="nav.contact">Contact</span>
                     <span class="sidebar-line"></span>
                 </a></li>
                 <li><a href="#blog" class="sidebar-link" data-section="blog">
@@ -204,7 +234,7 @@
                         </svg>
                     </span>
                     <span class="sidebar-number">08</span>
-                    <span class="sidebar-text">My Blog</span>
+                    <span class="sidebar-text" data-i18n="nav.blog">My Blog</span>
                     <span class="sidebar-line"></span>
                 </a></li>
             </ul>
@@ -230,8 +260,8 @@
                             Passionate about transforming complex technologies into elegant user experiences.
                         </p>
                         <div class="hero-buttons">
-                            <a href="#contact" class="btn btn-primary">Get in Touch</a>
-                            <a href="#projects" class="btn btn-secondary">View Work</a>
+                            <a href="#contact" class="btn btn-primary" data-i18n="hero.getInTouch">Get in Touch</a>
+                            <a href="#projects" class="btn btn-secondary" data-i18n="hero.viewWork">View Work</a>
                         </div>
                         <div class="university-logos">
                             <div class="university-logo" title="University of Cambridge">
@@ -263,14 +293,14 @@
                                 <svg class="stat-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                 </svg>
-                                <span class="stat-value" id="likeCountValue">628</span>
+                                <span class="stat-value" id="likeCountValue">1.4k</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="scroll-indicator">
                     <div class="scroll-line"></div>
-                    <span>Scroll</span>
+                    <span data-i18n="scroll">Scroll</span>
                     </div>
                 </div>
             </section>
@@ -639,7 +669,18 @@
             </div>
         </footer>
 
+    <script>
+        // 立即强制设置点赞数为1389（在页面加载时立即执行）
+        (function() {
+            const storedLikeCount = localStorage.getItem('likeCount');
+            if (!storedLikeCount || parseInt(storedLikeCount) < 1389) {
+                localStorage.setItem('likeCount', '1389');
+                localStorage.setItem('likeCountInitialized', 'true');
+            }
+        })();
+    </script>
     <script src="script.js"></script>
     <script src="links.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>

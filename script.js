@@ -30,13 +30,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateActiveNav() {
         let current = '';
         const scrollPosition = window.pageYOffset + 150;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
         
-        sections.forEach(section => {
+        // 检查是否滚动到页面底部
+        const isAtBottom = scrollPosition + windowHeight >= documentHeight - 50;
+        
+        sections.forEach((section, index) => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.clientHeight;
             const sectionId = section.getAttribute('id');
             
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            if (!sectionId) return; // 跳过没有 id 的 section
+            
+            // 如果是最后一个 section 且滚动到底部，激活它
+            if (isAtBottom && index === sections.length - 1) {
+                current = sectionId;
+            } 
+            // 正常滚动时的判断：当滚动位置在 section 范围内时激活
+            else if (scrollPosition >= sectionTop - 100 && scrollPosition < sectionTop + sectionHeight - 100) {
                 current = sectionId;
             }
         });
@@ -44,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // 更新顶部导航
         navItems.forEach(item => {
             item.classList.remove('active');
-            if (item.getAttribute('href') === `#${current}`) {
+            const href = item.getAttribute('href');
+            if (href && href === `#${current}`) {
                 item.classList.add('active');
             }
         });
@@ -52,7 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // 更新左侧导航
         sidebarLinks.forEach(item => {
             item.classList.remove('active');
-            if (item.getAttribute('data-section') === current) {
+            const dataSection = item.getAttribute('data-section');
+            if (dataSection && dataSection === current) {
                 item.classList.add('active');
             }
         });
@@ -329,6 +343,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // 格式化点赞数显示
+    function formatLikeCount(count) {
+        if (count >= 1000) {
+            const k = (count / 1000).toFixed(1);
+            return k.replace(/\.0$/, '') + 'k';
+        }
+        return count.toLocaleString();
+    }
+
     // 点赞功能
     function initLikeButton() {
         const likeButton = document.getElementById('likeButton');
@@ -336,30 +359,32 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!likeButton || !likeCountElement) return;
 
-        // 从 localStorage 读取点赞状态和数量
-        let likeCount = parseInt(localStorage.getItem('likeCount') || '628');
+        // 强制设置初始值为1389
+        const storedLikeCount = localStorage.getItem('likeCount');
+        let likeCount;
         const hasLiked = localStorage.getItem('hasLiked') === 'true';
         
-        // 如果localStorage中没有数据，设置为初始值628
-        if (!localStorage.getItem('likeCount')) {
-            likeCount = 628;
-            localStorage.setItem('likeCount', '628');
-        } else {
-            // 如果已有数据，确保至少为628
-            if (likeCount < 628) {
-                likeCount = 628;
-                localStorage.setItem('likeCount', '628');
+        // 读取存储的值
+        if (storedLikeCount) {
+            likeCount = parseInt(storedLikeCount);
+            // 如果值无效或小于1389，强制设置为1389
+            if (isNaN(likeCount) || likeCount < 1389) {
+                likeCount = 1389;
             }
+        } else {
+            // 如果没有存储值，设置为1389
+            likeCount = 1389;
         }
         
-        // 确保显示为628（如果当前值小于628）
-        if (likeCount < 628) {
-            likeCount = 628;
-            localStorage.setItem('likeCount', '628');
-        }
+        // 强制保存到localStorage（确保值正确）
+        localStorage.setItem('likeCount', likeCount.toString());
+        localStorage.setItem('likeCountInitialized', 'true');
         
-        // 更新显示
-        likeCountElement.textContent = likeCount.toLocaleString();
+        // 立即更新显示（格式化显示）
+        likeCountElement.textContent = formatLikeCount(likeCount);
+        
+        // 调试信息（可以在控制台查看）
+        console.log('点赞数初始化:', likeCount, '显示:', formatLikeCount(likeCount));
         if (hasLiked) {
             likeButton.classList.add('liked');
         }
@@ -386,13 +411,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 200);
             }
             
-            // 更新数量
-            likeCountElement.textContent = likeCount.toLocaleString();
+            // 更新数量（格式化显示）
+            likeCountElement.textContent = formatLikeCount(likeCount);
             localStorage.setItem('likeCount', likeCount.toString());
         });
     }
 
-    // 初始化
-    updateViewCount();
+    // 初始化 - 先初始化点赞数，确保立即显示正确值
     initLikeButton();
+    updateViewCount();
 });
+

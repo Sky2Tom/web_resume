@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>重置点赞数</title>
+</head>
+<body>
+    <h1>重置点赞数</h1>
+    <p>点击下面的按钮清除localStorage中的点赞数据，然后刷新主页。</p>
+    <button onclick="resetLikes()">清除点赞数据</button>
+    <script>
+        function resetLikes() {
+            localStorage.removeItem('likeCount');
+            localStorage.removeItem('likeCountInitialized');
+            alert('已清除点赞数据！请返回主页刷新查看。');
+        }
+    </script>
+</body>
+</html>
+

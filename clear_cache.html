@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>清除缓存</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>正在清除缓存...</h1>
+    <script>
+        // 清除所有localStorage数据
+        localStorage.clear();
+        
+        // 清除点赞相关数据
+        localStorage.removeItem('likeCount');
+        localStorage.removeItem('likeCountInitialized');
+        localStorage.removeItem('hasLiked');
+        
+        // 清除浏览量相关数据（如果需要）
+        // localStorage.removeItem('viewCount');
+        // localStorage.removeItem('viewCountInitialized');
+        
+        // 显示清除成功消息
+        document.body.innerHTML = '<h1>缓存已清除！</h1><p>正在跳转到主页...</p>';
+        
+        // 延迟1秒后跳转到主页
+        setTimeout(function() {
+            window.location.href = 'index.html';
+        }, 1000);
+    </script>
+</body>
+</html>
+

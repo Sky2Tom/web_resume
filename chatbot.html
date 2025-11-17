@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汤骁宇的AI助手 - Xiaoyu Tang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 科技感设计风格 - 参考tcpls_homepage */
+        :root {
+            --primary-color: #00D4FF;
+            --primary-dark: #00A8CC;
+            --secondary-color: #0066FF;
+            --accent-color: #FF6B35;
+            --bg-dark: #0A0E27;
+            --bg-darker: #050810;
+            --bg-card: #1A1F3A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B8BCC8;
+            --text-muted: #6B7280;
+            --border-color: #2A2F4A;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 40px rgba(0, 212, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .chatbot-container {
+            min-height: 100vh;
+            position: relative;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 背景 - 严格按照 tcpls_homepage 设计 */
+        .chatbot-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--gradient-1);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--gradient-3);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: var(--gradient-2);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+
+        .chatbot-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            width: 100%;
+            margin: 20px;
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg), 0 0 60px rgba(0, 212, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+            max-height: 900px;
+            overflow: hidden;
+        }
+
+        .chatbot-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 14, 39, 0.6);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .chatbot-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-3);
+            opacity: 0.8;
+        }
+
+        .chatbot-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--gradient-3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chatbot-header svg {
+            width: 28px;
+            height: 28px;
+            color: var(--primary-color);
+            filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.5));
+        }
+
+        .back-btn {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: rgba(10, 14, 39, 0.3);
+        }
+
+        /* 自定义滚动条 */
+        .chatbot-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-track {
+            background: rgba(42, 47, 74, 0.3);
+            border-radius: 4px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background: var(--gradient-3);
+            border-radius: 4px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        .message {
+            display: flex;
+            gap: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 20px;
+            font-weight: 600;
+            border: 2px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message.bot .message-avatar {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .message.bot .message-avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .message.user .message-avatar {
+            background: var(--gradient-3);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 16px 20px;
+            border-radius: 16px;
+            line-height: 1.75;
+            word-wrap: break-word;
+            font-size: 15px;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .message.bot .message-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .message.bot .message-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-3);
+            opacity: 0.6;
+        }
+
+        .message.user .message-content {
+            background: var(--gradient-3);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .chatbot-input-area {
+            padding: 24px 32px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 16px;
+            background: rgba(10, 14, 39, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(26, 31, 58, 0.6);
+            color: var(--text-primary);
+        }
+
+        .chatbot-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1), var(--shadow-glow);
+        }
+
+        .chatbot-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            padding: 14px 28px;
+            background: var(--gradient-3);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .send-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .loading span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            animation: bounce 1.4s infinite ease-in-out;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .loading span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loading span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 60px 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-message h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: var(--gradient-3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .welcome-message p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .chatbot-wrapper {
+                margin: 10px;
+                height: calc(100vh - 20px);
+                border-radius: 16px;
+            }
+
+            .chatbot-header {
+                padding: 20px;
+            }
+
+            .chatbot-header h1 {
+                font-size: 20px;
+            }
+
+            .chatbot-messages {
+                padding: 24px 20px;
+                gap: 16px;
+            }
+
+            .message-content {
+                max-width: 85%;
+                padding: 14px 18px;
+                font-size: 14px;
+            }
+
+            .chatbot-input-area {
+                padding: 20px;
+            }
+
+            .welcome-message {
+                padding: 40px 24px;
+            }
+
+            .welcome-message h2 {
+                font-size: 24px;
+            }
+
+        }
+
+        @media (max-width: 480px) {
+            .message-content {
+                max-width: 90%;
+            }
+
+            .welcome-message {
+                padding: 32px 20px;
+            }
+
+            .welcome-message h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+        <div class="chatbot-container">
+        <!-- 背景 - 严格按照 tcpls_homepage 设计 -->
+        <div class="chatbot-background">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+        </div>
+
+        <div class="chatbot-wrapper">
+            <div class="chatbot-header">
+                <h1>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <line x1="9" y1="10" x2="15" y2="10"></line>
+                        <line x1="12" y1="7" x2="12" y2="13"></line>
+                    </svg>
+                    汤骁宇的AI助手
+                </h1>
+                <a href="index.html" class="back-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                    </svg>
+                    返回主页
+                </a>
+            </div>
+            
+            <div class="chatbot-messages" id="messages">
+                <div class="welcome-message">
+                    <h2>👋 欢迎使用汤骁宇的AI助手</h2>
+                    <p>我是基于混元大模型的智能助手，可以回答您关于汤骁宇的问题。<br>请随时提问，我会尽力帮助您！</p>
+                </div>
+            </div>
+            
+            <div class="chatbot-input-area">
+                <input 
+                    type="text" 
+                    class="chatbot-input" 
+                    id="userInput" 
+                    placeholder="输入您的问题..."
+                    autocomplete="off"
+                >
+                <button class="send-btn" id="sendBtn">
+                    <span>发送</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const messagesContainer = document.getElementById('messages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        // 混元一站式平台 API 配置
+        const HUNYUAN_API_URL = 'https://hunyuanaide.taiji.woa.com/v1/chat/completions';
+        const HUNYUAN_API_TOKEN = 'c3d79a5f-524c-4b19-b951-255d8d5cac73';
+        const HUNYUAN_MODEL = 'hunyun-4b'; // 混元模型名称，根据实际文档调整
+        
+        // 系统提示词
+        const SYSTEM_PROMPT = `你是一位专业的客服助手，帮助用户了解汤骁宇（Xiaoyu Tang）的相关信息。
+汤骁宇是一位优秀的学生，拥有以下背景：
+- 教育背景：东南大学本科，剑桥大学数据科学与机器学习交流学习
+- 专业领域：数据科学、机器学习
+- 联系方式等信息可以在个人主页上找到
+
+请友好、专业地回答用户的问题。如果问题超出你的知识范围，请礼貌地说明。`;
+        
+        let conversationHistory = [];
+        
+        // 添加消息到聊天界面
+        function addMessage(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            // 用户头像显示名字首字母"X"（Xiaoyu）
+            avatar.textContent = isUser ? 'X' : '🤖';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            
+            // 移除欢迎消息
+            const welcomeMsg = messagesContainer.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // 显示加载状态
+        function showLoading() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = 'loading-message';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = '🤖';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.innerHTML = '<div class="loading"><span></span><span></span><span></span></div>';
+            
+            loadingDiv.appendChild(avatar);
+            loadingDiv.appendChild(messageContent);
+            messagesContainer.appendChild(loadingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // 移除加载状态
+        function removeLoading() {
+            const loadingMsg = document.getElementById('loading-message');
+            if (loadingMsg) {
+                loadingMsg.remove();
+            }
+        }
+        
+        // 调用混元一站式平台 API
+        async function callHunyuanAPI(userMessage) {
+            // 添加用户消息到历史记录
+            conversationHistory.push({
+                role: 'user',
+                content: userMessage
+            });
+            
+            // 构建消息列表（包含系统提示词）
+            const messages = [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...conversationHistory
+            ];
+            
+            // 构建请求头
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${HUNYUAN_API_TOKEN}`
+            };
+            
+            try {
+                // 调用混元API
+                const response = await fetch(HUNYUAN_API_URL, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        model: HUNYUAN_MODEL,
+                        messages: messages,
+                        temperature: 0.7,
+                        max_tokens: 2000
+                    })
+                });
+                
+                if (!response.ok) {
+                    let errorMessage = 'API请求失败';
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.error?.message || errorData.error?.code || errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+                    } catch (e) {
+                        errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                const data = await response.json();
+                
+                // 检查响应数据格式（兼容不同的响应格式）
+                let assistantMessage = '';
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    // OpenAI兼容格式
+                    assistantMessage = data.choices[0].message.content;
+                } else if (data.result || data.content || data.text) {
+                    // 混元可能使用的其他格式
+                    assistantMessage = data.result || data.content || data.text;
+                } else if (data.data && data.data.content) {
+                    // 嵌套格式
+                    assistantMessage = data.data.content;
+                } else {
+                    throw new Error('API响应格式错误：无法解析响应内容');
+                }
+                
+                // 添加助手回复到历史记录
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: assistantMessage
+                });
+                
+                // 限制历史记录长度（保留最近20轮对话）
+                if (conversationHistory.length > 20) {
+                    conversationHistory = conversationHistory.slice(-20);
+                }
+                
+                return assistantMessage;
+            } catch (error) {
+                console.error('混元API调用错误:', error);
+                throw error;
+            }
+        }
+        
+        // 发送消息
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+            
+            // 禁用输入和按钮
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+            
+            // 添加用户消息
+            addMessage(message, true);
+            userInput.value = '';
+            
+            // 显示加载状态
+            showLoading();
+            
+            try {
+                // 调用混元一站式平台API
+                const response = await callHunyuanAPI(message);
+                
+                // 移除加载状态
+                removeLoading();
+                
+                // 添加AI回复
+                addMessage(response, false);
+            } catch (error) {
+                // 移除加载状态
+                removeLoading();
+                
+                // 根据错误类型显示不同的提示信息
+                let errorText = '';
+                if (error.message.includes('网络') || error.message.includes('Network') || error.message.includes('fetch')) {
+                    errorText = `🌐 网络连接错误：${error.message}\n\n请检查您的网络连接，稍后重试。`;
+                } else if (error.message.includes('API密钥') || error.message.includes('API key') || error.message.includes('Unauthorized') || error.message.includes('Token')) {
+                    errorText = `🔑 API认证错误：${error.message}\n\n请检查混元API Token配置是否正确。`;
+                } else {
+                    errorText = `❌ 发生错误：${error.message}\n\n请稍后重试，如问题持续存在，请联系技术支持。`;
+                }
+                
+                // 显示错误消息
+                addMessage(errorText, false);
+            } finally {
+                // 恢复输入和按钮
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+        
+        // 事件监听
+        sendBtn.addEventListener('click', sendMessage);
+        
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // 页面加载时聚焦输入框
+        window.addEventListener('load', () => {
+            userInput.focus();
+        });
+    </script>
+</body>
+</html>

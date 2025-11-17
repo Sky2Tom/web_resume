@@ -91,6 +91,7 @@ body::before {
     z-index: -1;
 }
 
+
 /* ============================================
    Typography - 欧美杂志风格
    ============================================ */
@@ -345,6 +346,132 @@ strong, b {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    flex: 0 0 auto;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+/* 语言切换按钮栏 */
+.lang-toggle-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    padding: 4px;
+    gap: 0;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    color: rgba(0, 0, 0, 0.7);
+    padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.8rem, 1.5vw, 1.2rem);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: clamp(0.7rem, 1vw, 0.85rem);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 20px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    user-select: none;
+}
+
+.lang-icon {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    flex-shrink: 0;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.lang-label {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+}
+
+.lang-btn:hover {
+    color: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.lang-btn:hover .lang-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.lang-btn.active {
+    background: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 1);
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.lang-btn.active .lang-icon {
+    opacity: 1;
+}
+
+.lang-btn:active {
+    transform: scale(0.95);
+}
+
+.chatbot-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    position: relative;
+    z-index: 10;
+}
+
+.chatbot-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    background: #000000 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.chatbot-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.chatbot-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor !important;
 }
 
 .logo {
@@ -362,6 +489,8 @@ strong, b {
     display: flex;
     list-style: none;
     gap: var(--spacing-md);
+    flex: 1;
+    justify-content: center;
 }
 
 .nav-link {
@@ -904,7 +1033,7 @@ strong, b {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(3rem, 6vw, 6rem);
-    align-items: center;
+    align-items: stretch;
     position: relative;
     z-index: 1;
 }
@@ -912,16 +1041,19 @@ strong, b {
 .about-image {
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
+    height: 100%;
 }
 
 .conference-image {
-    width: 100%;
+    width: 85%;
     height: auto;
+    object-fit: contain;
     transition: var(--transition-slow);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    align-self: center;
 }
 
 .conference-image:hover {
@@ -1693,6 +1825,44 @@ strong, b {
         display: none;
     }
     
+    .nav-left {
+        gap: 0.75rem;
+    }
+    
+    .lang-toggle-bar {
+        padding: 3px;
+    }
+    
+    .lang-btn {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.75rem;
+        min-width: 40px;
+        gap: 0.3rem;
+    }
+    
+    .lang-icon {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    .nav-right {
+        gap: 12px;
+    }
+    
+    .chatbot-btn {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .chatbot-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
     .menu-toggle {
     display: flex;
     }
@@ -1825,8 +1995,38 @@ strong, b {
         padding: 8px 0;
     }
     
+    .nav-left {
+        gap: 0.5rem;
+    }
+    
+    .lang-toggle-bar {
+        padding: 2px;
+    }
+    
+    .lang-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+        min-width: 36px;
+        gap: 0.25rem;
+    }
+    
+    .lang-icon {
+        width: 12px;
+        height: 12px;
+    }
+    
     .logo {
         font-size: 1rem;
+    }
+    
+    .chatbot-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .chatbot-btn svg {
+        width: 18px;
+        height: 18px;
     }
     
     .main-content-wrapper {
