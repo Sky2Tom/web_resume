@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>汤骁宇的AI助手 - Xiaoyu Tang</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Markdown 解析库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <!-- 代码高亮库（可选，用于代码块） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <style>
         /* 科技感设计风格 - 参考tcpls_homepage */
         :root {
@@ -297,6 +302,8 @@
         .message-content {
             max-width: 75%;
             padding: 16px 20px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
             border-radius: 16px;
             line-height: 1.75;
             word-wrap: break-word;
@@ -310,6 +317,186 @@
             border: 1px solid var(--border-color);
             color: var(--text-primary);
             box-shadow: var(--shadow-sm);
+        }
+        
+        /* Markdown 内容样式 */
+        .message-content.markdown-content {
+            white-space: normal; /* 覆盖 pre-wrap，允许 Markdown 正常渲染 */
+            line-height: 1.8;
+        }
+        
+        .message-content.markdown-content h1,
+        .message-content.markdown-content h2,
+        .message-content.markdown-content h3,
+        .message-content.markdown-content h4,
+        .message-content.markdown-content h5,
+        .message-content.markdown-content h6 {
+            margin: 20px 0 12px 0;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+        
+        .message-content.markdown-content h1:first-child,
+        .message-content.markdown-content h2:first-child,
+        .message-content.markdown-content h3:first-child {
+            margin-top: 0;
+        }
+        
+        .message-content.markdown-content h1 {
+            font-size: 1.75em;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 8px;
+        }
+        
+        .message-content.markdown-content h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            padding-bottom: 6px;
+        }
+        
+        .message-content.markdown-content h3 {
+            font-size: 1.25em;
+        }
+        
+        .message-content.markdown-content h4 {
+            font-size: 1.1em;
+        }
+        
+        .message-content.markdown-content p {
+            margin: 12px 0;
+            line-height: 1.8;
+        }
+        
+        .message-content.markdown-content p:first-child {
+            margin-top: 0;
+        }
+        
+        .message-content.markdown-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .message-content.markdown-content ul,
+        .message-content.markdown-content ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+        
+        .message-content.markdown-content li {
+            margin: 8px 0;
+            line-height: 1.7;
+        }
+        
+        .message-content.markdown-content ul li {
+            list-style-type: disc;
+        }
+        
+        .message-content.markdown-content ol li {
+            list-style-type: decimal;
+        }
+        
+        .message-content.markdown-content blockquote {
+            margin: 16px 0;
+            padding: 12px 16px;
+            border-left: 4px solid var(--primary-color);
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .message-content.markdown-content code {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+            font-size: 0.9em;
+            color: var(--primary-color);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .message-content.markdown-content pre {
+            margin: 16px 0;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+        
+        .message-content.markdown-content pre code {
+            background: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+            font-size: 0.9em;
+            display: block;
+            white-space: pre;
+        }
+        
+        .message-content.markdown-content a {
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .message-content.markdown-content a:hover {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .message-content.markdown-content table {
+            margin: 16px 0;
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: auto;
+            display: block;
+        }
+        
+        .message-content.markdown-content table thead {
+            background: rgba(0, 212, 255, 0.1);
+        }
+        
+        .message-content.markdown-content table th,
+        .message-content.markdown-content table td {
+            padding: 10px 12px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            text-align: left;
+        }
+        
+        .message-content.markdown-content table th {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .message-content.markdown-content table tr:nth-child(even) {
+            background: rgba(0, 212, 255, 0.05);
+        }
+        
+        .message-content.markdown-content hr {
+            margin: 24px 0;
+            border: none;
+            border-top: 2px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .message-content.markdown-content strong {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .message-content.markdown-content em {
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .message-content.markdown-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 16px 0;
+            border: 1px solid rgba(0, 212, 255, 0.2);
         }
 
         .message.bot .message-content::before {
@@ -533,7 +720,7 @@
             <div class="chatbot-messages" id="messages">
                 <div class="welcome-message">
                     <h2>👋 欢迎使用汤骁宇的AI助手</h2>
-                    <p>我是基于混元大模型的智能助手，可以回答您关于汤骁宇的问题。<br>请随时提问，我会尽力帮助您！</p>
+                    <p>我是基于 AI 大模型的智能助手，也是汤骁宇先生的私人助理。🤖<br>可以为您查询和分析金融、科技资讯。📊<br>请随时提问，我会尽力帮助您！💬</p>
                 </div>
             </div>
             
@@ -561,21 +748,614 @@
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         
-        // 混元一站式平台 API 配置
-        const HUNYUAN_API_URL = 'https://hunyuanaide.taiji.woa.com/v1/chat/completions';
-        const HUNYUAN_API_TOKEN = 'c3d79a5f-524c-4b19-b951-255d8d5cac73';
-        const HUNYUAN_MODEL = 'hunyun-4b'; // 混元模型名称，根据实际文档调整
+        // AI API 配置（使用硅基流动，根据 TrendRadar 项目推荐）
+        // 用户需要注册硅基流动并获取 API Key: https://cloud.siliconflow.cn
+        // 推荐使用邀请链接注册获得免费额度: https://cloud.siliconflow.cn/i/fqnyVaIU
+        const AI_API_URL = 'https://api.siliconflow.cn/v1/chat/completions';
+        const AI_API_KEY = 'sk-meeghtuldljzfuhqosdjychufapwjfidwmpccckwvkqjioxs'; // 硅基流动 API Key
+        const AI_MODEL = 'Qwen/Qwen2.5-72B-Instruct'; // 使用 Qwen 模型（已验证可用）
         
-        // 系统提示词
-        const SYSTEM_PROMPT = `你是一位专业的客服助手，帮助用户了解汤骁宇（Xiaoyu Tang）的相关信息。
+        // 如果没有配置 API Key，使用提示信息
+        const AI_API_CONFIGURED = AI_API_KEY && AI_API_KEY.trim() !== '';
+        
+        // MCP 服务器配置（根据 TrendRadar 项目配置）
+        // 注意：需要先启动 TrendRadar 的 MCP 服务器和代理服务器
+        // 1. 启动 MCP 服务器：uv run python -m mcp_server.server --transport http --port 3333
+        // 2. 启动代理服务器：python3 mcp_proxy.py（解决 CORS 问题）
+        const MCP_SERVER_URL = 'http://localhost:3334/mcp'; // 使用代理服务器地址（解决 CORS）
+        let mcpTools = []; // 存储可用的 MCP 工具列表
+        let mcpInitialized = false;
+        
+        // 系统提示词（结合 TrendRadar MCP 工具使用）
+        const SYSTEM_PROMPT = `你是一位专业的AI助手，帮助用户查询和分析新闻热点信息。
+
+你可以使用 TrendRadar MCP 工具来获取实时新闻数据，包括：
+- 查询最新新闻
+- 按日期查询历史新闻
+- 搜索特定关键词的新闻
+- 分析话题的热度趋势
+- 进行情感分析等
+
+当用户询问新闻相关问题时，你会自动调用相应的工具获取数据，然后用自然、友好的语言向用户解释和展示这些信息。
+
+如果用户询问的是关于汤骁宇（Xiaoyu Tang）的个人信息，你也可以回答相关问题。
 汤骁宇是一位优秀的学生，拥有以下背景：
 - 教育背景：东南大学本科，剑桥大学数据科学与机器学习交流学习
 - 专业领域：数据科学、机器学习
 - 联系方式等信息可以在个人主页上找到
 
-请友好、专业地回答用户的问题。如果问题超出你的知识范围，请礼貌地说明。`;
+请友好、专业地回答用户的问题。如果问题超出你的知识范围，请礼貌地说明。
+
+注意：如果用户询问关于新闻、热点、舆情分析、趋势追踪等相关问题，你可以使用 MCP 工具来获取实时信息。`;
         
         let conversationHistory = [];
+        
+        // ============================================
+        // MCP 客户端实现
+        // ============================================
+        
+        // MCP JSON-RPC 请求封装
+        async function mcpRequest(method, params = {}) {
+            try {
+                const response = await fetch(MCP_SERVER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json, text/event-stream', // FastMCP 2.0 要求
+                    },
+                    mode: 'cors', // 允许跨域
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: Date.now(),
+                        method: method,
+                        params: params
+                    })
+                });
+                
+                if (!response.ok) {
+                    // 尝试读取错误响应
+                    let errorText = '';
+                    try {
+                        const errorData = await response.text();
+                        errorText = errorData;
+                    } catch (e) {
+                        errorText = response.statusText;
+                    }
+                    throw new Error(`MCP 请求失败 (${response.status}): ${errorText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(`MCP 错误: ${data.error.message || JSON.stringify(data.error)}`);
+                }
+                
+                return data.result;
+            } catch (error) {
+                // 如果是网络错误（CORS 或连接失败）
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    throw new Error('无法连接到 MCP 服务器。请确保服务器已启动并允许跨域请求。');
+                }
+                console.error('MCP 请求错误:', error);
+                throw error;
+            }
+        }
+        
+        // FastMCP 2.0 Streamable-HTTP 客户端实现
+        let mcpSessionId = null;
+        
+        // 解析 SSE (Server-Sent Events) 响应
+        async function parseSSEResponse(response) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let result = null;
+            let errorData = null;
+            
+            try {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || ''; // 保留最后不完整的行
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const jsonStr = line.substring(6).trim(); // 移除 "data: " 前缀并去除空白
+                            if (!jsonStr) continue; // 跳过空行
+                            
+                            try {
+                                const data = JSON.parse(jsonStr);
+                                if (data.jsonrpc === '2.0') {
+                                    // 检查是否有错误
+                                    if (data.error) {
+                                        errorData = data;
+                                        return data; // 返回包含错误的数据
+                                    }
+                                    // 检查是否有结果
+                                    if (data.result) {
+                                        result = data;
+                                        return result;
+                                    }
+                                    // 如果只有 id，可能是心跳或其他消息，继续等待
+                                    if (data.id) {
+                                        result = data;
+                                    }
+                                }
+                            } catch (e) {
+                                console.warn('解析 SSE 数据失败:', e, '原始数据:', jsonStr.substring(0, 100));
+                            }
+                        } else if (line.startsWith('event: ')) {
+                            // 处理事件类型
+                            const eventType = line.substring(7).trim();
+                            console.log('SSE 事件类型:', eventType);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('读取 SSE 流时出错:', error);
+                throw error;
+            } finally {
+                reader.releaseLock();
+            }
+            
+            // 如果有错误数据，返回它
+            if (errorData) {
+                return errorData;
+            }
+            
+            return result;
+        }
+        
+        // 建立 MCP 会话（FastMCP 2.0 需要）
+        async function establishMCPSession() {
+            if (mcpSessionId) return mcpSessionId;
+            
+            try {
+                // FastMCP 2.0 使用 SSE 连接，需要先建立会话
+                // 发送初始化请求建立会话
+                const initResponse = await fetch(MCP_SERVER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json, text/event-stream',
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: Date.now(),
+                        method: 'initialize',
+                        params: {
+                            protocolVersion: '2024-11-05',
+                            capabilities: {},
+                            clientInfo: {
+                                name: 'chatbot-web-client',
+                                version: '1.0.0'
+                            }
+                        }
+                    })
+                });
+                
+                if (!initResponse.ok) {
+                    const errorText = await initResponse.text();
+                    throw new Error(`初始化失败 (${initResponse.status}): ${errorText.substring(0, 100)}`);
+                }
+                
+                // 尝试从响应头获取 session ID（FastMCP 2.0 使用 mcp-session-id）
+                // 注意：由于 CORS 限制，可能无法读取自定义响应头
+                let sessionHeader = null;
+                try {
+                    // 尝试读取所有可访问的响应头
+                    const headers = {};
+                    initResponse.headers.forEach((value, key) => {
+                        headers[key] = value;
+                    });
+                    console.log('可访问的响应头:', headers);
+                    
+                    sessionHeader = initResponse.headers.get('mcp-session-id') || 
+                                   initResponse.headers.get('X-Session-ID') || 
+                                   initResponse.headers.get('Session-ID');
+                } catch (e) {
+                    console.warn('读取响应头时出错:', e);
+                }
+                
+                // 解析 SSE 格式的响应
+                let initData = null;
+                const contentType = initResponse.headers.get('content-type') || '';
+                if (contentType.includes('text/event-stream')) {
+                    initData = await parseSSEResponse(initResponse);
+                } else {
+                    try {
+                        initData = await initResponse.json();
+                    } catch (e) {
+                        // 如果 JSON 解析失败，尝试作为文本解析
+                        const text = await initResponse.text();
+                        console.warn('响应不是 JSON 格式:', text.substring(0, 200));
+                        throw new Error('响应格式不正确');
+                    }
+                }
+                
+                // 获取 session ID
+                if (sessionHeader) {
+                    mcpSessionId = sessionHeader.trim();
+                    console.log('✅ MCP 会话已建立（从响应头），Session ID:', mcpSessionId);
+                } else if (initData && initData.result && initData.result.sessionId) {
+                    mcpSessionId = initData.result.sessionId;
+                    console.log('✅ MCP 会话已建立（从响应体），Session ID:', mcpSessionId);
+                } else {
+                    // 由于 CORS 限制无法读取响应头，尝试使用 EventSource 或创建一个代理
+                    // 临时方案：尝试从响应中提取，或者使用后续请求来获取
+                    console.warn('⚠️ 无法从响应头获取 session ID（CORS 限制）');
+                    console.warn('响应数据:', initData);
+                    console.warn('尝试使用 EventSource 方式连接...');
+                    
+                    // 由于 FastMCP 2.0 使用 SSE，我们可以尝试使用 EventSource
+                    // 但首先需要解决 session ID 的问题
+                    // 临时方案：使用一个基于请求 ID 的 session ID（不推荐，但可以尝试）
+                    // 或者提示用户配置服务器 CORS
+                    throw new Error('无法获取会话 ID。请配置 MCP 服务器允许 CORS 读取 mcp-session-id 响应头，或使用代理服务器。');
+                }
+                
+                return mcpSessionId;
+            } catch (error) {
+                console.error('建立 MCP 会话失败:', error);
+                console.error('错误详情:', error.message);
+                if (error.stack) {
+                    console.error('堆栈:', error.stack);
+                }
+                return null;
+            }
+        }
+        
+        // 更新 MCP 状态显示（已移除状态栏，此函数保留但不执行任何操作）
+        function updateMCPStatus(status, message) {
+            // MCP 状态栏已移除，此函数保留以避免代码错误
+            // 状态信息仅在控制台输出
+            if (status === 'success') {
+                console.log('✅ MCP:', message);
+            } else if (status === 'error') {
+                console.warn('⚠️ MCP:', message);
+            } else {
+                console.log('🔄 MCP:', message);
+            }
+        }
+        
+        // 初始化 MCP 客户端 - 获取可用工具列表
+        async function initializeMCP() {
+            if (mcpInitialized) return;
+            
+            updateMCPStatus('loading', '🔄 正在连接 MCP 服务器...');
+            
+            try {
+                // 先建立会话
+                const sessionId = await establishMCPSession();
+                if (!sessionId) {
+                    throw new Error('无法建立 MCP 会话');
+                }
+                
+                updateMCPStatus('loading', '🔄 正在获取可用工具列表...');
+                
+                // 使用会话 ID 调用 tools/list
+                // 注意：FastMCP 2.0 的 tools/list 可能不需要 params，或者需要特定格式
+                const response = await fetch(MCP_SERVER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json, text/event-stream',
+                        'mcp-session-id': sessionId, // FastMCP 2.0 使用 mcp-session-id
+                    },
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: Date.now(),
+                        method: 'tools/list',
+                        params: {} // FastMCP 2.0 需要 params 字段，即使是空对象
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`获取工具列表失败: ${response.status}`);
+                }
+                
+                // 解析响应（可能是 SSE 格式）
+                let data = null;
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('text/event-stream')) {
+                    data = await parseSSEResponse(response);
+                } else {
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        // 如果 JSON 解析失败，尝试读取文本
+                        const text = await response.text();
+                        throw new Error(`响应解析失败: ${text.substring(0, 200)}`);
+                    }
+                }
+                
+                // 检查 data 是否为 null
+                if (!data) {
+                    throw new Error('响应数据为空');
+                }
+                
+                if (data.error) {
+                    throw new Error(`MCP 错误: ${data.error.message || JSON.stringify(data.error)}`);
+                }
+                
+                const tools = data.result;
+                
+                if (tools && tools.tools && Array.isArray(tools.tools)) {
+                    mcpTools = tools.tools;
+                    mcpInitialized = true;
+                    if (mcpTools.length > 0) {
+                        const toolNames = mcpTools.map(t => t.name).join(', ');
+                        console.log('✅ MCP 客户端初始化成功，可用工具:', toolNames);
+                        updateMCPStatus('success', `✅ MCP 已连接！可用工具: ${mcpTools.length} 个 (${toolNames.substring(0, 50)}...)`);
+                    } else {
+                        console.warn('⚠️ MCP 服务器已连接，但没有可用工具（可能需要先运行爬虫获取数据）');
+                        updateMCPStatus('success', '✅ MCP 已连接（工具列表为空，可能需要先运行爬虫）');
+                    }
+                } else if (tools && Array.isArray(tools)) {
+                    mcpTools = tools;
+                    mcpInitialized = true;
+                    if (mcpTools.length > 0) {
+                        const toolNames = mcpTools.map(t => t.name || t).join(', ');
+                        console.log('✅ MCP 客户端初始化成功，可用工具:', toolNames);
+                        updateMCPStatus('success', `✅ MCP 已连接！可用工具: ${mcpTools.length} 个`);
+                    } else {
+                        console.warn('⚠️ MCP 服务器已连接，但没有可用工具');
+                        updateMCPStatus('success', '✅ MCP 已连接（工具列表为空）');
+                    }
+                } else {
+                    // 即使工具列表格式不正确，也标记为已初始化（可以使用基础 AI）
+                    console.warn('⚠️ 工具列表格式不正确，但 MCP 服务器已连接');
+                    mcpInitialized = true;
+                    mcpTools = [];
+                    updateMCPStatus('success', '✅ MCP 已连接（工具列表格式异常，将使用基础 AI）');
+                }
+            } catch (error) {
+                console.warn('⚠️ MCP 服务器连接失败，将仅使用基础 AI 功能');
+                console.warn('错误详情:', error.message);
+                console.warn('请确保：');
+                console.warn('1. TrendRadar MCP 服务器已启动（运行: uv run python -m mcp_server.server --transport http --port 3333）');
+                console.warn('2. 服务器地址正确: ' + MCP_SERVER_URL);
+                console.warn('3. 服务器允许 CORS 跨域请求');
+                updateMCPStatus('error', `⚠️ MCP 连接失败: ${error.message.substring(0, 50)}...`);
+                mcpInitialized = false;
+            }
+        }
+        
+        // 调用 MCP 工具
+        async function callMCPTool(toolName, arguments_) {
+            try {
+                // 确保有会话 ID
+                if (!mcpSessionId) {
+                    await establishMCPSession();
+                }
+                
+                const response = await fetch(MCP_SERVER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json, text/event-stream',
+                        'mcp-session-id': mcpSessionId, // FastMCP 2.0 使用 mcp-session-id
+                    },
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: Date.now(),
+                        method: 'tools/call',
+                        params: {
+                            name: toolName,
+                            arguments: arguments_
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`工具调用失败: ${response.status}`);
+                }
+                
+                // 解析响应（可能是 SSE 格式）
+                let data = null;
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('text/event-stream')) {
+                    data = await parseSSEResponse(response);
+                } else {
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        const text = await response.text();
+                        throw new Error(`响应解析失败: ${text.substring(0, 200)}`);
+                    }
+                }
+                
+                // 检查 data 是否为 null
+                if (!data) {
+                    throw new Error('工具调用响应数据为空');
+                }
+                
+                if (data.error) {
+                    throw new Error(`MCP 工具错误: ${data.error.message || JSON.stringify(data.error)}`);
+                }
+                
+                if (!data.result) {
+                    throw new Error('工具调用未返回结果');
+                }
+                
+                return data.result;
+            } catch (error) {
+                console.error(`调用 MCP 工具 ${toolName} 失败:`, error);
+                throw error;
+            }
+        }
+        
+        // 智能判断是否需要使用 MCP 工具
+        function shouldUseMCPTool(userMessage) {
+            if (!mcpInitialized || mcpTools.length === 0) return false;
+            
+            const message = userMessage.toLowerCase();
+            const mcpKeywords = [
+                '新闻', '热点', '舆情', '趋势', '热搜', '榜单',
+                '知乎', '微博', '抖音', 'b站', 'bilibili',
+                '分析', '监控', '追踪', '数据', '统计'
+            ];
+            
+            return mcpKeywords.some(keyword => message.includes(keyword));
+        }
+        
+        // 使用 MCP 工具处理用户问题
+        async function processWithMCP(userMessage) {
+            try {
+                if (!mcpInitialized || mcpTools.length === 0) {
+                    console.warn('MCP 工具未初始化或没有可用工具');
+                    return null;
+                }
+                
+                const message = userMessage.toLowerCase();
+                let selectedTool = null;
+                let toolArgs = {};
+                
+                // 根据用户问题智能选择工具
+                // 1. 查询最新新闻
+                if (message.includes('最新') || message.includes('最新新闻') || message.includes('最新热点')) {
+                    selectedTool = mcpTools.find(t => t.name === 'get_latest_news');
+                    if (selectedTool) {
+                        toolArgs = {
+                            limit: 10, // 默认返回10条
+                            include_url: false
+                        };
+                        // 检查是否指定了平台
+                        if (message.includes('知乎')) toolArgs.platforms = ['zhihu'];
+                        else if (message.includes('微博')) toolArgs.platforms = ['weibo'];
+                        else if (message.includes('抖音')) toolArgs.platforms = ['douyin'];
+                        else if (message.includes('b站') || message.includes('bilibili')) toolArgs.platforms = ['bilibili-hot-search'];
+                    }
+                }
+                // 2. 按日期查询
+                else if (message.includes('昨天') || message.includes('前天') || message.includes('今天') || message.match(/\d{4}-\d{2}-\d{2}/)) {
+                    selectedTool = mcpTools.find(t => t.name === 'get_news_by_date');
+                    if (selectedTool) {
+                        toolArgs = {
+                            limit: 10,
+                            include_url: false
+                        };
+                        // 日期解析（简化处理，实际应该更智能）
+                        if (message.includes('昨天')) {
+                            const yesterday = new Date();
+                            yesterday.setDate(yesterday.getDate() - 1);
+                            toolArgs.date = yesterday.toISOString().split('T')[0];
+                        } else if (message.includes('今天')) {
+                            toolArgs.date = new Date().toISOString().split('T')[0];
+                        }
+                    }
+                }
+                // 3. 搜索关键词
+                else if (message.includes('搜索') || message.includes('查找') || message.includes('关于')) {
+                    selectedTool = mcpTools.find(t => t.name === 'search_news_by_keyword');
+                    if (selectedTool) {
+                        // 提取关键词（简化处理）
+                        const keywordMatch = userMessage.match(/["']([^"']+)["']|搜索(.+?)(?:的|新闻|热点)|查找(.+?)(?:的|新闻|热点)|关于(.+?)(?:的|新闻|热点)/);
+                        if (keywordMatch) {
+                            toolArgs.keyword = keywordMatch[1] || keywordMatch[2] || keywordMatch[3] || keywordMatch[4];
+                            toolArgs.limit = 10;
+                            toolArgs.include_url = false;
+                        }
+                    }
+                }
+                // 4. 趋势分析
+                else if (message.includes('趋势') || message.includes('分析') || message.includes('热度')) {
+                    selectedTool = mcpTools.find(t => t.name === 'analyze_topic_trend');
+                    if (selectedTool) {
+                        const keywordMatch = userMessage.match(/["']([^"']+)["']|分析(.+?)(?:的|趋势|热度)|(.+?)(?:的|趋势|热度)/);
+                        if (keywordMatch) {
+                            toolArgs.topic = keywordMatch[1] || keywordMatch[2] || keywordMatch[3];
+                            toolArgs.mode = 'trend'; // 默认趋势分析
+                            // 检查时间范围
+                            if (message.includes('一周') || message.includes('7天')) {
+                                const endDate = new Date();
+                                const startDate = new Date();
+                                startDate.setDate(startDate.getDate() - 7);
+                                toolArgs.date_range = {
+                                    start: startDate.toISOString().split('T')[0],
+                                    end: endDate.toISOString().split('T')[0]
+                                };
+                            }
+                        }
+                    }
+                }
+                
+                // 如果没有匹配到特定工具，使用默认工具（获取最新新闻）
+                if (!selectedTool) {
+                    selectedTool = mcpTools.find(t => t.name === 'get_latest_news');
+                    if (selectedTool) {
+                        toolArgs = { limit: 10, include_url: false };
+                    }
+                }
+                
+                if (selectedTool) {
+                    console.log('使用 MCP 工具:', selectedTool.name, '参数:', toolArgs);
+                    const toolResult = await callMCPTool(selectedTool.name, toolArgs);
+                    return {
+                        tool: selectedTool.name,
+                        result: toolResult
+                    };
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('MCP 工具处理失败:', error);
+                return null;
+            }
+        }
+        
+        // 渲染 Markdown 内容为 HTML
+        function renderMarkdown(markdownText) {
+            if (!markdownText || typeof markdownText !== 'string') {
+                return '';
+            }
+            
+            // 配置 marked 选项
+            if (typeof marked !== 'undefined') {
+                marked.setOptions({
+                    breaks: true, // 支持换行
+                    gfm: true, // 支持 GitHub Flavored Markdown
+                    headerIds: false, // 不生成 header ID
+                    mangle: false // 不混淆邮箱地址
+                });
+                
+                try {
+                    // 解析 Markdown
+                    let html = marked.parse(markdownText);
+                    
+                    // 高亮代码块（如果 highlight.js 可用）
+                    if (typeof hljs !== 'undefined') {
+                        // 延迟执行代码高亮，确保 DOM 已更新
+                        setTimeout(() => {
+                            const codeBlocks = document.querySelectorAll('.message-content.markdown-content pre code');
+                            codeBlocks.forEach(block => {
+                                hljs.highlightElement(block);
+                            });
+                        }, 0);
+                    }
+                    
+                    return html;
+                } catch (e) {
+                    console.warn('Markdown 解析失败，使用纯文本:', e);
+                    // 如果解析失败，返回转义的 HTML
+                    return markdownText.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+                }
+            } else {
+                // 如果 marked 库未加载，使用简单的文本替换
+                return markdownText
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>');
+            }
+        }
         
         // 添加消息到聊天界面
         function addMessage(content, isUser = false) {
@@ -589,7 +1369,14 @@
             
             const messageContent = document.createElement('div');
             messageContent.className = 'message-content';
-            messageContent.textContent = content;
+            
+            // 如果是 AI 回复，渲染 Markdown；如果是用户消息，直接显示文本
+            if (!isUser) {
+                messageContent.className += ' markdown-content';
+                messageContent.innerHTML = renderMarkdown(content);
+            } else {
+                messageContent.textContent = content;
+            }
             
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(messageContent);
@@ -632,36 +1419,61 @@
             }
         }
         
-        // 调用混元一站式平台 API
-        async function callHunyuanAPI(userMessage) {
+        // 调用 AI API（使用硅基流动，根据 TrendRadar 项目推荐）
+        async function callAIAPI(userMessage, mcpContext = null) {
+            // 检查 API 配置
+            if (!AI_API_CONFIGURED) {
+                throw new Error('AI API 未配置。请先在代码中设置 AI_API_KEY。\n\n获取方式：\n1. 访问 https://cloud.siliconflow.cn/i/fqnyVaIU 注册（使用邀请链接可获得免费额度）\n2. 访问 https://cloud.siliconflow.cn/me/account/ak 获取 API Key\n3. 将 API Key 填入 chatbot.html 中的 AI_API_KEY 变量');
+            }
+            
             // 添加用户消息到历史记录
             conversationHistory.push({
                 role: 'user',
                 content: userMessage
             });
             
+            // 构建系统提示词，如果使用了 MCP 工具，添加工具结果上下文
+            let systemPrompt = SYSTEM_PROMPT;
+            if (mcpContext && mcpContext.result) {
+                // 格式化 MCP 工具返回的数据
+                let contextText = '';
+                try {
+                    if (typeof mcpContext.result === 'string') {
+                        // 如果结果是 JSON 字符串，尝试解析
+                        const parsed = JSON.parse(mcpContext.result);
+                        contextText = JSON.stringify(parsed, null, 2);
+                    } else {
+                        contextText = JSON.stringify(mcpContext.result, null, 2);
+                    }
+                } catch (e) {
+                    contextText = String(mcpContext.result);
+                }
+                systemPrompt += `\n\n以下是使用 TrendRadar MCP 工具获取的实时新闻数据：\n${contextText}\n\n请根据这些数据回答用户的问题，用自然、友好的语言进行回复。`;
+            }
+            
             // 构建消息列表（包含系统提示词）
             const messages = [
-                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'system', content: systemPrompt },
                 ...conversationHistory
             ];
             
             // 构建请求头
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${HUNYUAN_API_TOKEN}`
+                'Authorization': `Bearer ${AI_API_KEY}`
             };
             
             try {
-                // 调用混元API
-                const response = await fetch(HUNYUAN_API_URL, {
+                // 调用硅基流动 API
+                const response = await fetch(AI_API_URL, {
                     method: 'POST',
                     headers: headers,
                     body: JSON.stringify({
-                        model: HUNYUAN_MODEL,
+                        model: AI_MODEL,
                         messages: messages,
                         temperature: 0.7,
-                        max_tokens: 2000
+                        max_tokens: 2000,
+                        stream: false
                     })
                 });
                 
@@ -671,26 +1483,57 @@
                         const errorData = await response.json();
                         errorMessage = errorData.error?.message || errorData.error?.code || errorData.message || `HTTP ${response.status}: ${response.statusText}`;
                     } catch (e) {
-                        errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                        const errorText = await response.text();
+                        errorMessage = `HTTP ${response.status}: ${response.statusText}. ${errorText.substring(0, 200)}`;
                     }
                     throw new Error(errorMessage);
                 }
                 
-                const data = await response.json();
+                // 检查响应内容类型
+                const contentType = response.headers.get('content-type') || '';
+                let data;
                 
-                // 检查响应数据格式（兼容不同的响应格式）
+                if (contentType.includes('application/json')) {
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        const text = await response.text();
+                        throw new Error(`JSON解析失败: ${text.substring(0, 200)}`);
+                    }
+                } else {
+                    // 如果不是 JSON，可能是 HTML 错误页面
+                    const text = await response.text();
+                    if (text.includes('<!DOCTYPE html>') || text.includes('<html')) {
+                        throw new Error('API返回了HTML页面，可能是URL或认证配置错误。请检查硅基流动API配置。');
+                    } else {
+                        // 尝试作为文本解析
+                        throw new Error(`API返回了非JSON格式: ${contentType}. 响应: ${text.substring(0, 200)}`);
+                    }
+                }
+                
+                // 检查响应数据格式（硅基流动使用 OpenAI 兼容格式）
                 let assistantMessage = '';
                 if (data.choices && data.choices[0] && data.choices[0].message) {
-                    // OpenAI兼容格式
+                    // OpenAI 兼容格式（硅基流动使用此格式）
                     assistantMessage = data.choices[0].message.content;
                 } else if (data.result || data.content || data.text) {
-                    // 混元可能使用的其他格式
+                    // 其他可能的格式
                     assistantMessage = data.result || data.content || data.text;
                 } else if (data.data && data.data.content) {
                     // 嵌套格式
                     assistantMessage = data.data.content;
+                } else if (data.message) {
+                    // 错误消息格式
+                    throw new Error(data.message);
                 } else {
-                    throw new Error('API响应格式错误：无法解析响应内容');
+                    // 打印完整响应以便调试
+                    console.error('无法解析的API响应:', data);
+                    throw new Error('API响应格式错误：无法解析响应内容。请检查API配置。');
+                }
+                
+                // 确保返回的是字符串
+                if (!assistantMessage || typeof assistantMessage !== 'string') {
+                    throw new Error('AI返回的内容格式不正确');
                 }
                 
                 // 添加助手回复到历史记录
@@ -706,7 +1549,7 @@
                 
                 return assistantMessage;
             } catch (error) {
-                console.error('混元API调用错误:', error);
+                console.error('AI API调用错误:', error);
                 throw error;
             }
         }
@@ -728,8 +1571,24 @@
             showLoading();
             
             try {
-                // 调用混元一站式平台API
-                const response = await callHunyuanAPI(message);
+                let mcpContext = null;
+                
+                // 判断是否需要使用 MCP 工具
+                if (shouldUseMCPTool(message)) {
+                    try {
+                        // 使用 MCP 工具获取数据
+                        mcpContext = await processWithMCP(message);
+                        if (mcpContext) {
+                            console.log('MCP 工具返回数据:', mcpContext);
+                        }
+                    } catch (mcpError) {
+                        console.warn('MCP 工具调用失败，继续使用基础 AI:', mcpError);
+                        // MCP 工具失败不影响基础 AI 功能
+                    }
+                }
+                
+                // 调用 AI API（传入 MCP 上下文）
+                const response = await callAIAPI(message, mcpContext);
                 
                 // 移除加载状态
                 removeLoading();
@@ -744,8 +1603,8 @@
                 let errorText = '';
                 if (error.message.includes('网络') || error.message.includes('Network') || error.message.includes('fetch')) {
                     errorText = `🌐 网络连接错误：${error.message}\n\n请检查您的网络连接，稍后重试。`;
-                } else if (error.message.includes('API密钥') || error.message.includes('API key') || error.message.includes('Unauthorized') || error.message.includes('Token')) {
-                    errorText = `🔑 API认证错误：${error.message}\n\n请检查混元API Token配置是否正确。`;
+                } else if (error.message.includes('API密钥') || error.message.includes('API key') || error.message.includes('Unauthorized') || error.message.includes('Token') || error.message.includes('API 未配置')) {
+                    errorText = `🔑 API配置错误：${error.message}\n\n请检查硅基流动 API Key 配置是否正确。获取方式：访问 https://cloud.siliconflow.cn/i/fqnyVaIU 注册并获取 API Key。`;
                 } else {
                     errorText = `❌ 发生错误：${error.message}\n\n请稍后重试，如问题持续存在，请联系技术支持。`;
                 }
@@ -770,8 +1629,12 @@
             }
         });
         
-        // 页面加载时聚焦输入框
-        window.addEventListener('load', () => {
+        // 页面加载时初始化 MCP 客户端并聚焦输入框
+        window.addEventListener('load', async () => {
+            // 初始化 MCP 客户端
+            await initializeMCP();
+            
+            // 聚焦输入框
             userInput.focus();
         });
     </script>
