@@ -1738,41 +1738,6 @@ strong, b {
     padding: var(--spacing-xl) 0;
 }
 
-.blog-card {
-    background-color: rgba(255, 255, 255, 0.95);
-    border: 1px solid var(--color-gray-200);
-    border-radius: 8px;
-    padding: var(--spacing-md);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: var(--transition-base);
-    position: relative;
-    z-index: 2;
-    margin-bottom: var(--spacing-md);
-}
-
-.blog-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-    border-color: var(--color-black);
-}
-
-.blog-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-}
-
-.blog-card-title {
-    font-family: var(--font-serif);
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--color-black);
-    margin-bottom: var(--spacing-xs);
-    position: relative;
-    z-index: 2;
-}
-
 .blog-card-url {
     font-size: 0.9rem;
     color: var(--color-gray-600);
@@ -1806,6 +1771,322 @@ strong, b {
     background-color: var(--color-gray-100);
 }
 
+/* 博客日期样式 */
+.blog-card-date {
+    font-size: 0.875rem;
+    color: var(--color-gray-500);
+    font-weight: 400;
+    display: block;
+    margin-top: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+/* Markdown 内容样式 - 美观的排版 */
+.blog-card-content {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.markdown-body {
+    color: var(--color-gray-800);
+    line-height: 1.85;
+    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    letter-spacing: 0.01em;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Markdown 标题样式 */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: var(--color-black);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+}
+
+.markdown-body h1:first-child,
+.markdown-body h2:first-child,
+.markdown-body h3:first-child,
+.markdown-body h4:first-child,
+.markdown-body h5:first-child,
+.markdown-body h6:first-child {
+    margin-top: 0;
+}
+
+.markdown-body h1 {
+    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+    border-bottom: 2px solid var(--color-gray-300);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.markdown-body h2 {
+    font-size: clamp(1.5rem, 2vw, 1.875rem);
+    border-bottom: 1px solid var(--color-gray-200);
+    padding-bottom: 0.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.markdown-body h3 {
+    font-size: clamp(1.25rem, 1.75vw, 1.5rem);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.markdown-body h4 {
+    font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.markdown-body h5,
+.markdown-body h6 {
+    font-size: clamp(1rem, 1.3vw, 1.1rem);
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Markdown 段落样式 */
+.markdown-body p {
+    margin: 1.25rem 0;
+    line-height: 1.85;
+    color: var(--color-gray-800);
+}
+
+.markdown-body p:first-child {
+    margin-top: 0;
+}
+
+.markdown-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Markdown 列表样式 */
+.markdown-body ul,
+.markdown-body ol {
+    margin: 1.25rem 0;
+    padding-left: 2rem;
+    color: var(--color-gray-800);
+}
+
+.markdown-body li {
+    margin: 0.75rem 0;
+    line-height: 1.8;
+    padding-left: 0.5rem;
+}
+
+.markdown-body ul li {
+    list-style-type: disc;
+}
+
+.markdown-body ol li {
+    list-style-type: decimal;
+}
+
+.markdown-body ul ul,
+.markdown-body ol ol,
+.markdown-body ul ol,
+.markdown-body ol ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Markdown 引用样式 */
+.markdown-body blockquote {
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid var(--color-gray-400);
+    background-color: var(--color-gray-100);
+    border-radius: 4px;
+    color: var(--color-gray-700);
+    font-style: italic;
+    position: relative;
+}
+
+.markdown-body blockquote p {
+    margin: 0.5rem 0;
+}
+
+.markdown-body blockquote p:first-child {
+    margin-top: 0;
+}
+
+.markdown-body blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Markdown 代码样式 */
+.markdown-body code {
+    background-color: var(--color-gray-100);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'Courier New', monospace;
+    font-size: 0.9em;
+    color: var(--color-gray-900);
+    border: 1px solid var(--color-gray-200);
+    word-break: break-word;
+}
+
+.markdown-body pre {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    background-color: var(--color-gray-900);
+    border: 1px solid var(--color-gray-800);
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.6;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-body pre code {
+    background: transparent;
+    padding: 0;
+    border: none;
+    color: #e5e5e5;
+    font-size: 0.875em;
+    display: block;
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+/* Markdown 链接样式 */
+.markdown-body a {
+    color: var(--color-black);
+    text-decoration: underline;
+    text-decoration-color: var(--color-gray-400);
+    text-underline-offset: 3px;
+    transition: var(--transition-base);
+    word-break: break-all;
+}
+
+.markdown-body a:hover {
+    color: var(--color-gray-700);
+    text-decoration-color: var(--color-black);
+}
+
+/* Markdown 表格样式 */
+.markdown-body table {
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+    font-size: 0.9em;
+}
+
+.markdown-body table thead {
+    background-color: var(--color-gray-100);
+}
+
+.markdown-body table th,
+.markdown-body table td {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-gray-200);
+    text-align: left;
+}
+
+.markdown-body table th {
+    font-weight: 600;
+    color: var(--color-black);
+    background-color: var(--color-gray-100);
+}
+
+.markdown-body table tr:nth-child(even) {
+    background-color: var(--color-gray-50);
+}
+
+.markdown-body table tr:hover {
+    background-color: var(--color-gray-100);
+}
+
+/* Markdown 水平线样式 */
+.markdown-body hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 2px solid var(--color-gray-200);
+    height: 0;
+}
+
+/* Markdown 强调样式 */
+.markdown-body strong {
+    font-weight: 600;
+    color: var(--color-black);
+}
+
+.markdown-body em {
+    font-style: italic;
+    color: var(--color-gray-700);
+}
+
+/* Markdown 图片样式 */
+.markdown-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-gray-200);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 改进博客卡片整体样式 */
+.blog-card {
+    background-color: rgba(255, 255, 255, 0.98);
+    border: 1px solid var(--color-gray-200);
+    border-radius: 12px;
+    padding: clamp(1.5rem, 2.5vw, 2.5rem);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
+    transition: var(--transition-base);
+    position: relative;
+    z-index: 2;
+    margin-bottom: var(--spacing-md);
+    backdrop-filter: blur(10px);
+}
+
+.blog-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+    border-color: var(--color-gray-300);
+}
+
+.blog-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--color-gray-200);
+}
+
+.blog-card-header-content {
+    flex: 1;
+    min-width: 0; /* 允许内容收缩 */
+}
+
+.blog-card-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    font-weight: 600;
+    color: var(--color-black);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
 
 /* 响应式设计 - 已整合到全面响应式系统中 */
 
@@ -1963,11 +2244,34 @@ strong, b {
     }
     
     .blog-card {
-        padding: var(--spacing-sm);
+        padding: clamp(1.25rem, 2vw, 1.5rem);
+        border-radius: 10px;
     }
     
     .blog-card-title {
+        font-size: clamp(1.25rem, 2vw, 1.5rem);
+    }
+    
+    .blog-card-header {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        padding-bottom: var(--spacing-sm);
+    }
+    
+    .markdown-body {
+        font-size: 0.9rem;
+    }
+    
+    .markdown-body h1 {
+        font-size: 1.5rem;
+    }
+    
+    .markdown-body h2 {
         font-size: 1.25rem;
+    }
+    
+    .markdown-body h3 {
+        font-size: 1.1rem;
     }
     
     .form-actions {
@@ -2083,16 +2387,34 @@ strong, b {
     }
     
     .blog-card {
-        padding: var(--spacing-xs);
+        padding: clamp(1rem, 1.5vw, 1.25rem);
+        border-radius: 8px;
     }
     
     .blog-card-header {
         flex-direction: column;
         gap: var(--spacing-xs);
+        padding-bottom: var(--spacing-xs);
     }
     
     .blog-card-title {
-        font-size: 1.1rem;
+        font-size: clamp(1.1rem, 1.8vw, 1.25rem);
+    }
+    
+    .markdown-body {
+        font-size: 0.85rem;
+    }
+    
+    .markdown-body h1 {
+        font-size: 1.35rem;
+    }
+    
+    .markdown-body h2 {
+        font-size: 1.15rem;
+    }
+    
+    .markdown-body h3 {
+        font-size: 1rem;
     }
     
     .blog-card-url {

@@ -724,13 +724,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 确保日期格式正确
                 const blogDate = blog.date || new Date().toISOString().split('T')[0];
-                const blogContent = blog.content || '';
+                let blogContent = blog.content || '';
+                
+                // 如果内容是 URL，自动转换为链接格式
+                if (blogContent && (blogContent.startsWith('http://') || blogContent.startsWith('https://'))) {
+                    blogContent = `[${blogContent}](${blogContent})`;
+                }
                 
             blogCard.innerHTML = `
                 <div class="blog-card-header">
-                    <div>
+                    <div class="blog-card-header-content">
                         <h3 class="blog-card-title">${escapeHtml(blog.title)}</h3>
-                            <span class="blog-card-date">${formatDate(blogDate)}</span>
+                        <span class="blog-card-date">${formatDate(blogDate)}</span>
                     </div>
                     <button class="blog-delete-btn" data-blog-id="${blog.id || Date.now() + index}" title="删除博客">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -740,7 +745,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </button>
                 </div>
                 <div class="blog-card-content markdown-body">
-                        ${renderMarkdown(blogContent)}
+                    ${renderMarkdown(blogContent)}
                 </div>
             `;
             blogList.appendChild(blogCard);
