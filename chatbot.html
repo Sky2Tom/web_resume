@@ -10,6 +10,8 @@
     <!-- 代码高亮库（可选，用于代码块） -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- 语言切换功能 -->
+    <script src="language.js"></script>
     <style>
         /* 科技感设计风格 - 参考tcpls_homepage */
         :root {
@@ -196,6 +198,156 @@
             border-color: var(--primary-color);
             transform: translateY(-2px);
             box-shadow: var(--shadow-glow);
+        }
+
+        /* 科技感语言切换按钮 */
+        .chatbot-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .lang-toggle-bar-chatbot {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 30px;
+            padding: 4px;
+            gap: 0;
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.15),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .lang-toggle-bar-chatbot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.1) 0%, 
+                rgba(0, 102, 255, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .lang-toggle-bar-chatbot:hover::before {
+            opacity: 1;
+        }
+
+        .lang-btn-chatbot {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 10px 18px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 26px;
+            min-width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            user-select: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lang-btn-chatbot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.2) 0%, 
+                rgba(0, 102, 255, 0.2) 100%);
+            border-radius: 26px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lang-btn-chatbot:hover {
+            color: rgba(255, 255, 255, 0.95);
+            transform: translateY(-1px);
+        }
+
+        .lang-btn-chatbot:hover::before {
+            opacity: 1;
+        }
+
+        .lang-btn-chatbot.active {
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.25) 0%, 
+                rgba(0, 102, 255, 0.25) 100%);
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(0, 212, 255, 0.5);
+        }
+
+        .lang-btn-chatbot.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.3) 0%, 
+                rgba(0, 102, 255, 0.3) 100%);
+            border-radius: 26px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .lang-icon-chatbot {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 4px currentColor);
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn-chatbot:hover .lang-icon-chatbot {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        .lang-btn-chatbot.active .lang-icon-chatbot {
+            filter: drop-shadow(0 0 8px var(--primary-color));
+        }
+
+        .lang-label-chatbot {
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lang-btn-chatbot:active {
+            transform: translateY(0) scale(0.95);
         }
 
         .chatbot-messages {
@@ -701,7 +853,7 @@
 
         <div class="chatbot-wrapper">
             <div class="chatbot-header">
-                <h1>
+                <h1 data-i18n="chatbot.title">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                         <line x1="9" y1="10" x2="15" y2="10"></line>
@@ -709,18 +861,38 @@
                     </svg>
                     汤骁宇的AI助手
                 </h1>
-                <a href="index.html" class="back-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 12H5M12 19l-7-7 7-7"></path>
-                    </svg>
-                    返回主页
-                </a>
+                <div class="chatbot-header-actions">
+                    <div class="lang-toggle-bar-chatbot" id="langToggleBarChatbot">
+                        <button class="lang-btn-chatbot" data-lang="zh" id="langBtnZhChatbot" title="中文">
+                            <svg class="lang-icon-chatbot" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <span class="lang-label-chatbot">中文</span>
+                        </button>
+                        <button class="lang-btn-chatbot" data-lang="en" id="langBtnEnChatbot" title="English">
+                            <svg class="lang-icon-chatbot" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <span class="lang-label-chatbot">EN</span>
+                        </button>
+                    </div>
+                    <a href="index.html" class="back-btn" data-i18n="chatbot.back">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                        返回主页
+                    </a>
+                </div>
             </div>
             
             <div class="chatbot-messages" id="messages">
                 <div class="welcome-message">
-                    <h2>👋 欢迎使用汤骁宇的AI助手</h2>
-                    <p>我是基于 AI 大模型的智能助手，也是汤骁宇先生的私人助理。🤖<br>可以为您查询和分析金融、科技资讯。📊<br>请随时提问，我会尽力帮助您！💬</p>
+                    <h2 data-i18n="chatbot.welcome.title">👋 欢迎使用汤骁宇的AI助手</h2>
+                    <p data-i18n="chatbot.welcome.description">我是基于 AI 大模型的智能助手，也是汤骁宇先生的私人助理。🤖<br>可以为您查询和分析金融、科技资讯。📊<br>请随时提问，我会尽力帮助您！💬</p>
                 </div>
             </div>
             
@@ -729,11 +901,12 @@
                     type="text" 
                     class="chatbot-input" 
                     id="userInput" 
+                    data-i18n-placeholder="chatbot.placeholder"
                     placeholder="输入您的问题..."
                     autocomplete="off"
                 >
                 <button class="send-btn" id="sendBtn">
-                    <span>发送</span>
+                    <span data-i18n="chatbot.send">发送</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="22" y1="2" x2="11" y2="13"></line>
                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -1637,6 +1810,147 @@
             // 聚焦输入框
             userInput.focus();
         });
+    </script>
+    
+    <!-- 语言切换功能 -->
+    <script>
+        (function() {
+            'use strict';
+            
+            // 获取当前语言，默认为中文
+            let currentLang = localStorage.getItem('preferredLanguage') || 'zh';
+            
+            // 获取翻译文本的辅助函数
+            function getTranslation(key, lang) {
+                if (typeof translations === 'undefined') return null;
+                const keys = key.split('.');
+                let value = translations[lang];
+                for (let k of keys) {
+                    if (value && value[k]) {
+                        value = value[k];
+                    } else {
+                        return null;
+                    }
+                }
+                return value;
+            }
+            
+            // 更新单个元素的文本
+            function updateElement(element, key, lang) {
+                const translation = getTranslation(key, lang);
+                if (translation !== null) {
+                    if (element.tagName === 'INPUT' && element.hasAttribute('data-i18n-placeholder')) {
+                        element.placeholder = translation;
+                    } else if (element.tagName === 'P' && translation.includes('<br>')) {
+                        element.innerHTML = translation;
+                    } else {
+                        element.textContent = translation;
+                    }
+                }
+            }
+            
+            // 更新所有带data-i18n属性的元素
+            function updateAllElements(lang) {
+                const elements = document.querySelectorAll('[data-i18n]');
+                elements.forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    updateElement(element, key, lang);
+                });
+                
+                // 更新 placeholder
+                const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+                placeholderElements.forEach(element => {
+                    const key = element.getAttribute('data-i18n-placeholder');
+                    const translation = getTranslation(key, lang);
+                    if (translation) {
+                        element.placeholder = translation;
+                    }
+                });
+                
+                // 更新HTML lang属性
+                document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+            }
+            
+            // 切换语言
+            function switchLanguage(lang) {
+                currentLang = lang;
+                localStorage.setItem('preferredLanguage', lang);
+                updateAllElements(lang);
+                
+                // 更新语言切换按钮的激活状态
+                const zhBtn = document.getElementById('langBtnZhChatbot');
+                const enBtn = document.getElementById('langBtnEnChatbot');
+                
+                if (lang === 'zh') {
+                    if (zhBtn) zhBtn.classList.add('active');
+                    if (enBtn) enBtn.classList.remove('active');
+                } else {
+                    if (zhBtn) zhBtn.classList.remove('active');
+                    if (enBtn) enBtn.classList.add('active');
+                }
+            }
+            
+            // 设置语言切换按钮
+            function setupLanguageToggle() {
+                const zhBtn = document.getElementById('langBtnZhChatbot');
+                const enBtn = document.getElementById('langBtnEnChatbot');
+                
+                if (!zhBtn || !enBtn) {
+                    console.warn('语言切换按钮未找到，将在DOM加载后重试');
+                    setTimeout(setupLanguageToggle, 100);
+                    return;
+                }
+                
+                // 设置初始状态
+                if (currentLang === 'zh') {
+                    zhBtn.classList.add('active');
+                    enBtn.classList.remove('active');
+                } else {
+                    zhBtn.classList.remove('active');
+                    enBtn.classList.add('active');
+                }
+                
+                // 点击中文按钮
+                zhBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('切换到中文');
+                    switchLanguage('zh');
+                });
+                
+                // 点击英文按钮
+                enBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('切换到英文');
+                    switchLanguage('en');
+                });
+            }
+            
+            // 初始化
+            function init() {
+                // 确保translations对象已加载
+                if (typeof translations === 'undefined') {
+                    console.error('translations对象未定义，请确保language.js已加载');
+                    setTimeout(init, 100);
+                    return;
+                }
+                
+                // 更新所有元素
+                updateAllElements(currentLang);
+                
+                // 设置语言切换按钮
+                setupLanguageToggle();
+            }
+            
+            // 等待DOM加载完成后初始化
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                // DOM已经加载完成，直接初始化
+                setTimeout(init, 50);
+            }
+        })();
     </script>
 </body>
 </html>

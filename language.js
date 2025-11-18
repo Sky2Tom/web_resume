@@ -193,6 +193,18 @@ const translations = {
         footer: {
             copyright: '© 2025 汤骁宇。保留所有权利。',
             note: '精心设计'
+        },
+        // AI助手
+        chatbot: {
+            title: '汤骁宇的AI助手',
+            back: '返回主页',
+            welcome: {
+                title: '👋 欢迎使用汤骁宇的AI助手',
+                description: '我是基于 AI 大模型的智能助手，也是汤骁宇先生的私人助理。🤖<br>可以为您查询和分析金融、科技资讯。📊<br>请随时提问，我会尽力帮助您！💬'
+            },
+            placeholder: '输入您的问题...',
+            send: '发送',
+            thinking: '思考中...'
         }
     },
     en: {
@@ -388,6 +400,18 @@ const translations = {
         footer: {
             copyright: '© 2025 Xiaoyu Tang. All rights reserved.',
             note: 'Designed with attention to detail'
+        },
+        // AI助手
+        chatbot: {
+            title: 'Xiaoyu Tang\'s AI Assistant',
+            back: 'Back to Home',
+            welcome: {
+                title: '👋 Welcome to Xiaoyu Tang\'s AI Assistant',
+                description: 'I am an AI-powered intelligent assistant and Mr. Xiaoyu Tang\'s personal assistant. 🤖<br>I can help you query and analyze financial and technology news. 📊<br>Feel free to ask me anything, and I\'ll do my best to help you! 💬'
+            },
+            placeholder: 'Type your question...',
+            send: 'Send',
+            thinking: 'Thinking...'
         }
     }
 };
