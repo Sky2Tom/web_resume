@@ -742,6 +742,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="blog-card-date">${formatDate(blogDate)}</span>
                     </div>
                     <div class="blog-card-actions">
+                        <button class="blog-toggle-btn" data-blog-id="${blog.id || Date.now() + index}" title="展开/折叠">
+                            <svg class="toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
                         <button class="blog-edit-btn" data-blog-id="${blog.id || Date.now() + index}" title="编辑博客">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -754,12 +759,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         </svg>
                     </button>
-                    </div>
                 </div>
-                <div class="blog-card-content markdown-body">
+                </div>
+                <div class="blog-card-content markdown-body" data-blog-id="${blog.id || Date.now() + index}">
                     ${renderMarkdown(blogContent)}
                 </div>
             `;
+            
+            // 恢复折叠状态（从 localStorage 读取用户偏好）
+            const blogId = blog.id || Date.now() + index;
+            const isCollapsed = localStorage.getItem(`blog_collapsed_${blogId}`) === 'true';
+            const contentDiv = blogCard.querySelector('.blog-card-content');
+            const toggleBtn = blogCard.querySelector('.blog-toggle-btn');
+            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+            
+            // 默认展开，如果用户之前折叠过则保持折叠状态
+            if (isCollapsed) {
+                contentDiv.style.display = 'none';
+                toggleIcon.style.transform = 'rotate(-90deg)';
+            } else {
+                contentDiv.style.display = 'block';
+                toggleIcon.style.transform = 'rotate(0deg)';
+            }
             blogList.appendChild(blogCard);
                 console.log(`✅ 已添加博客: ${blog.title}`);
             } catch (error) {
@@ -782,6 +803,35 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', function() {
                 const blogId = this.getAttribute('data-blog-id');
                 editBlog(blogId);
+            });
+        });
+        
+        // 为折叠/展开按钮添加事件监听
+        document.querySelectorAll('.blog-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); // 防止事件冒泡
+                const blogId = this.getAttribute('data-blog-id');
+                const contentDiv = document.querySelector(`.blog-card-content[data-blog-id="${blogId}"]`);
+                const toggleIcon = this.querySelector('.toggle-icon');
+                
+                if (contentDiv) {
+                    const isCollapsed = contentDiv.style.display === 'none' || 
+                                       contentDiv.classList.contains('collapsed');
+                    
+                    if (isCollapsed) {
+                        // 展开
+                        contentDiv.style.display = 'block';
+                        contentDiv.classList.remove('collapsed');
+                        toggleIcon.style.transform = 'rotate(0deg)';
+                        localStorage.setItem(`blog_collapsed_${blogId}`, 'false');
+                    } else {
+                        // 折叠
+                        contentDiv.style.display = 'none';
+                        contentDiv.classList.add('collapsed');
+                        toggleIcon.style.transform = 'rotate(-90deg)';
+                        localStorage.setItem(`blog_collapsed_${blogId}`, 'true');
+                    }
+                }
             });
         });
     }

@@ -1759,6 +1759,7 @@ strong, b {
     flex-shrink: 0;
 }
 
+.blog-toggle-btn,
 .blog-edit-btn,
 .blog-delete-btn {
     background: none;
@@ -1774,14 +1775,32 @@ strong, b {
     flex-shrink: 0;
 }
 
-.blog-edit-btn:hover {
+.blog-toggle-btn:hover,
+.blog-edit-btn:hover,
+.blog-delete-btn:hover {
     color: var(--color-black);
     background-color: var(--color-gray-100);
 }
 
-.blog-delete-btn:hover {
-    color: var(--color-black);
-    background-color: var(--color-gray-100);
+.blog-toggle-btn .toggle-icon {
+    transition: transform 0.3s ease;
+    transform: rotate(0deg);
+}
+
+.blog-card-content {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    display: block; /* 默认显示 */
+}
+
+.blog-card-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: hidden;
 }
 
 /* 博客日期样式 */
