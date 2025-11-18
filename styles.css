@@ -347,6 +347,7 @@ strong, b {
     justify-content: space-between;
     align-items: center;
     position: relative;
+    width: 100%;
 }
 
 .nav-left {
@@ -362,6 +363,7 @@ strong, b {
     gap: 16px;
     flex: 0 0 auto;
     margin-left: auto;
+    order: 999; /* 确保在最右侧 */
 }
 
 /* 语言切换按钮栏 */
@@ -491,6 +493,10 @@ strong, b {
     gap: var(--spacing-md);
     flex: 1;
     justify-content: center;
+    margin: 0 auto;
+    max-width: fit-content;
+    /* 确保不会挤压右侧按钮 */
+    min-width: 0;
 }
 
 .nav-link {
@@ -2293,6 +2299,8 @@ strong, b {
     
     .nav-right {
         gap: 12px;
+        margin-left: auto; /* 确保在最右侧 */
+        order: 999; /* 确保在最右侧 */
     }
     
     .chatbot-btn {
@@ -2482,6 +2490,12 @@ strong, b {
     
     .logo {
         font-size: 1rem;
+    }
+    
+    .nav-right {
+        gap: 10px;
+        margin-left: auto; /* 确保在最右侧 */
+        order: 999; /* 确保在最右侧 */
     }
     
     .chatbot-btn {
