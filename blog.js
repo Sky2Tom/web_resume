@@ -523,6 +523,12 @@ AI技术正在经历快速发展期，市场机遇巨大，但也面临诸多挑
     localStorage.setItem('blogs', JSON.stringify(sampleBlogs));
 }
 
+// 博客功能 - 在线同步版本
+// API 配置
+const BLOG_API_URL = '/api/blogs'; // Vercel Serverless Function 路径
+// 如果使用其他 API，可以修改这里，例如：
+// const BLOG_API_URL = 'https://your-api-domain.com/api/blogs';
+
 // 博客功能
 document.addEventListener('DOMContentLoaded', function() {
     const addBlogBtn = document.getElementById('addBlogBtn');
@@ -532,8 +538,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelBlogBtn = document.getElementById('cancelBlogBtn');
     const blogFileInput = document.getElementById('blogFile');
     
-    // 从localStorage加载博客
-    function loadBlogs() {
+    // 从在线 API 加载博客（带降级到 localStorage）
+    async function loadBlogs() {
+        try {
+            // 先显示加载状态
+            if (blogList) {
+                blogList.innerHTML = '<p class="blog-empty">正在加载博客...</p>';
+            }
+            
+            // 尝试从在线 API 获取
+            const response = await fetch(BLOG_API_URL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const blogs = data.blogs || [];
+                
+                // 保存到 localStorage 作为缓存
+                localStorage.setItem('blogs', JSON.stringify(blogs));
+                localStorage.setItem('blogs_last_sync', Date.now().toString());
+                
+                displayBlogs(blogs);
+                return;
+            } else {
+                console.warn('在线 API 获取失败，使用本地缓存:', response.status);
+            }
+        } catch (error) {
+            console.warn('在线 API 获取失败，使用本地缓存:', error);
+        }
+        
+        // 降级：从 localStorage 加载
         const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
         displayBlogs(blogs);
     }
@@ -582,8 +620,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 保存博客
-    function saveBlog() {
+    // 保存博客（在线同步）
+    async function saveBlog() {
         const title = document.getElementById('blogTitle').value.trim();
         const date = document.getElementById('blogDate').value;
         const content = document.getElementById('blogContent').value.trim();
@@ -593,15 +631,44 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // 先保存到本地（立即反馈）
         const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
-        blogs.push({
+        const newBlog = {
             id: Date.now(),
             title: title,
             date: date,
             content: content
-        });
-        
+        };
+        blogs.push(newBlog);
         localStorage.setItem('blogs', JSON.stringify(blogs));
+        
+        // 显示保存状态
+        const originalBtnText = saveBlogBtn.innerHTML;
+        saveBlogBtn.disabled = true;
+        saveBlogBtn.innerHTML = '保存中...';
+        
+        try {
+            // 尝试同步到在线 API
+            const response = await fetch(BLOG_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ blogs: blogs })
+            });
+            
+            if (response.ok) {
+                localStorage.setItem('blogs_last_sync', Date.now().toString());
+                console.log('博客已同步到服务器');
+            } else {
+                console.warn('在线同步失败，但已保存到本地:', response.status);
+            }
+        } catch (error) {
+            console.warn('在线同步失败，但已保存到本地:', error);
+        } finally {
+            saveBlogBtn.disabled = false;
+            saveBlogBtn.innerHTML = originalBtnText;
+        }
         
         // 清空表单
         document.getElementById('blogTitle').value = '';
@@ -616,14 +683,39 @@ document.addEventListener('DOMContentLoaded', function() {
         loadBlogs();
     }
     
-    // 删除博客
-    function deleteBlog(blogId) {
-        if (confirm('确定要删除这篇博客吗？')) {
-            const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
-            const filteredBlogs = blogs.filter(blog => String(blog.id || blog.title) !== String(blogId));
-            localStorage.setItem('blogs', JSON.stringify(filteredBlogs));
-            loadBlogs();
+    // 删除博客（在线同步）
+    async function deleteBlog(blogId) {
+        if (!confirm('确定要删除这篇博客吗？')) {
+            return;
         }
+        
+        // 先从本地删除（立即反馈）
+        const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+        const filteredBlogs = blogs.filter(blog => String(blog.id || blog.title) !== String(blogId));
+        localStorage.setItem('blogs', JSON.stringify(filteredBlogs));
+        
+        try {
+            // 尝试同步到在线 API
+            const response = await fetch(BLOG_API_URL, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ blogId: blogId })
+            });
+            
+            if (response.ok) {
+                localStorage.setItem('blogs_last_sync', Date.now().toString());
+                console.log('删除已同步到服务器');
+            } else {
+                console.warn('在线同步失败，但已从本地删除:', response.status);
+            }
+        } catch (error) {
+            console.warn('在线同步失败，但已从本地删除:', error);
+        }
+        
+        // 重新加载博客列表
+        loadBlogs();
     }
     
     // 导出到全局作用域以便HTML中的onclick使用（如果需要）
@@ -685,8 +777,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 初始化示例博客（如果还没有博客）
-    initializeSampleBlogs();
+    // 注意：只在本地没有博客时初始化，避免覆盖在线数据
+    const localBlogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+    if (localBlogs.length === 0) {
+        initializeSampleBlogs();
+    }
     
-    // 初始化：加载博客
+    // 初始化：加载博客（优先从在线 API 加载）
     loadBlogs();
+    
+    // 定期同步（每5分钟检查一次是否有更新）
+    setInterval(async () => {
+        try {
+            const response = await fetch(BLOG_API_URL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const onlineBlogs = data.blogs || [];
+                const localBlogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+                
+                // 比较本地和在线数据，如果在线数据更新，则同步
+                const lastSync = parseInt(localStorage.getItem('blogs_last_sync') || '0');
+                const onlineBlogsStr = JSON.stringify(onlineBlogs);
+                const localBlogsStr = JSON.stringify(localBlogs);
+                
+                // 如果在线数据与本地不同，且在线数据看起来更新（有更多博客或时间戳更新）
+                if (onlineBlogsStr !== localBlogsStr && onlineBlogs.length >= localBlogs.length) {
+                    localStorage.setItem('blogs', onlineBlogsStr);
+                    localStorage.setItem('blogs_last_sync', Date.now().toString());
+                    displayBlogs(onlineBlogs);
+                    console.log('博客已从服务器同步更新');
+                }
+            }
+        } catch (error) {
+            // 静默失败，不影响用户体验
+            console.debug('定期同步检查失败:', error);
+        }
+    }, 5 * 60 * 1000); // 5分钟
 });
