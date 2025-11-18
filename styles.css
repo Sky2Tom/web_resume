@@ -1817,7 +1817,7 @@ strong, b {
 .blog-card-content {
     margin-top: var(--spacing-md);
     padding-top: var(--spacing-md);
-    border-top: 1px solid var(--color-gray-200);
+    border-top: 1px solid var(--color-black); /* 黑色分隔线，只有一个 */
 }
 
 .markdown-body {
@@ -1848,6 +1848,68 @@ strong, b {
     letter-spacing: -0.01em;
     margin-top: 1.5em; /* 统一使用 em 单位，参考 iwiki */
     margin-bottom: 0.5em; /* 统一底部间距 */
+    position: relative;
+}
+
+/* 为 h2 和 h3 标题后的内容添加卡片背景，区分不同 section */
+.markdown-body h2 {
+    margin-top: 2em; /* h2 前增加间距，与上一个 section 区分 */
+    padding: 0.75em 1em;
+    margin-left: -1em;
+    margin-right: -1em;
+    background-color: var(--color-gray-50); /* 浅灰背景卡片 */
+    border-radius: 6px 6px 0 0; /* 顶部圆角 */
+    border-top: none;
+}
+
+/* h2 后的段落、列表等元素添加背景，直到下一个 h2 或 h1 */
+.markdown-body h2 ~ p,
+.markdown-body h2 ~ ul,
+.markdown-body h2 ~ ol,
+.markdown-body h2 ~ blockquote,
+.markdown-body h2 ~ pre,
+.markdown-body h2 ~ table,
+.markdown-body h2 ~ div:not(.blog-card):not(.blog-list) {
+    background-color: var(--color-gray-50);
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-left: -1em;
+    margin-right: -1em;
+}
+
+/* h2 section 的最后一个元素添加底部圆角 */
+.markdown-body h2 ~ *:last-child:not(h1):not(h2) {
+    border-radius: 0 0 6px 6px;
+    padding-bottom: 0.75em;
+}
+
+.markdown-body h3 {
+    margin-top: 1.5em; /* h3 前增加间距 */
+    padding: 0.5em 0.75em;
+    margin-left: -0.75em;
+    margin-right: -0.75em;
+    background-color: rgba(250, 250, 250, 0.8); /* 更浅的灰背景 */
+    border-radius: 4px 4px 0 0; /* 顶部圆角 */
+    border-top: none;
+}
+
+/* h3 后的段落、列表等元素添加背景，直到下一个 h2、h3 或 h1 */
+.markdown-body h3 ~ p:not(h2 ~ p):not(h1 ~ p),
+.markdown-body h3 ~ ul:not(h2 ~ ul):not(h1 ~ ul),
+.markdown-body h3 ~ ol:not(h2 ~ ol):not(h1 ~ ol),
+.markdown-body h3 ~ blockquote:not(h2 ~ blockquote):not(h1 ~ blockquote),
+.markdown-body h3 ~ pre:not(h2 ~ pre):not(h1 ~ pre) {
+    background-color: rgba(250, 250, 250, 0.8);
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    margin-left: -0.75em;
+    margin-right: -0.75em;
+}
+
+/* h3 section 的最后一个元素添加底部圆角 */
+.markdown-body h3 ~ *:last-child:not(h1):not(h2):not(h3) {
+    border-radius: 0 0 4px 4px;
+    padding-bottom: 0.5em;
 }
 
 .markdown-body h1:first-child,
@@ -1870,14 +1932,14 @@ strong, b {
     font-size: clamp(1.5rem, 2vw, 1.875rem);
     border-bottom: 1px solid var(--color-gray-200);
     padding-bottom: 0.4em;
-    margin-top: 1.5em;
     margin-bottom: 0.5em;
+    /* 背景卡片样式已在上面定义，这里只保留字体大小和边框 */
 }
 
 .markdown-body h3 {
     font-size: clamp(1.25rem, 1.75vw, 1.5rem);
-    margin-top: 1.5em;
     margin-bottom: 0.5em;
+    /* 背景卡片样式已在上面定义，这里只保留字体大小 */
 }
 
 .markdown-body h4 {
@@ -2129,9 +2191,9 @@ strong, b {
     justify-content: space-between;
     align-items: flex-start;
     gap: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 0; /* 移除底部间距，因为内容区域有上边框 */
     padding-bottom: var(--spacing-md);
-    border-bottom: 2px solid var(--color-gray-200);
+    /* 移除 border-bottom，只保留内容区域的上边框 */
 }
 
 .blog-card-header-content {
