@@ -529,6 +529,38 @@ const BLOG_API_URL = '/api/blogs'; // Vercel Serverless Function 路径
 // 如果使用其他 API，可以修改这里，例如：
 // const BLOG_API_URL = 'https://your-api-domain.com/api/blogs';
 
+// Markdown 渲染函数（带降级处理）
+function renderMarkdown(markdownText) {
+    if (!markdownText || typeof markdownText !== 'string') {
+        return '';
+    }
+    
+    // 如果 marked 库已加载，使用它
+    if (typeof marked !== 'undefined') {
+        try {
+            // 配置 marked 选项
+            marked.setOptions({
+                breaks: true, // 支持换行
+                gfm: true, // 支持 GitHub Flavored Markdown
+                headerIds: false, // 不生成 header ID
+                mangle: false // 不混淆邮箱地址
+            });
+            return marked.parse(markdownText);
+        } catch (e) {
+            console.warn('Markdown 解析失败，使用纯文本:', e);
+        }
+    }
+    
+    // 降级：简单的文本处理
+    return markdownText
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code>$1</code>');
+}
+
 // 博客功能
 document.addEventListener('DOMContentLoaded', function() {
     const addBlogBtn = document.getElementById('addBlogBtn');
@@ -538,6 +570,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelBlogBtn = document.getElementById('cancelBlogBtn');
     const blogFileInput = document.getElementById('blogFile');
     
+    // 检查必要的元素是否存在
+    if (!blogList) {
+        console.error('❌ 错误：找不到 blogList 元素！请检查 HTML 中是否有 <div id="blogList"></div>');
+        return;
+    }
+    
+    if (!addBlogBtn) {
+        console.warn('⚠️ 警告：找不到 addBlogBtn 元素');
+    }
+    
+    console.log('✅ 博客功能初始化完成，blogList 元素:', blogList);
+    
     // 从在线 API 加载博客（带降级到 localStorage）
     async function loadBlogs() {
         try {
@@ -545,6 +589,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (blogList) {
                 blogList.innerHTML = '<p class="blog-empty">正在加载博客...</p>';
             }
+            
+            console.log('🔄 开始从 API 加载博客，URL:', BLOG_API_URL);
             
             // 尝试从在线 API 获取
             const response = await fetch(BLOG_API_URL, {
@@ -554,6 +600,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
+            console.log('📡 API 响应状态:', response.status, response.statusText);
+            
             if (response.ok) {
                 const data = await response.json();
                 const blogs = data.blogs || [];
@@ -562,40 +610,127 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('blogs', JSON.stringify(blogs));
                 localStorage.setItem('blogs_last_sync', Date.now().toString());
                 
+                console.log('✅ 成功从服务器加载博客，数量:', blogs.length);
+                if (blogs.length > 0) {
+                    console.log('博客列表:', blogs.map(b => ({ id: b.id, title: b.title })));
+                }
                 displayBlogs(blogs);
                 return;
             } else {
-                console.warn('在线 API 获取失败，使用本地缓存:', response.status);
+                // 尝试获取错误详情
+                let errorData = null;
+                let errorText = '';
+                try {
+                    errorText = await response.text();
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch (e) {
+                        errorData = { error: errorText.substring(0, 500) };
+                    }
+                } catch (e) {
+                    errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
+                }
+                
+                console.error('❌ 在线 API 获取失败！');
+                console.error('状态码:', response.status);
+                console.error('状态文本:', response.statusText);
+                console.error('错误详情:', errorData);
+                console.error('原始响应:', errorText.substring(0, 500));
+                
+                // 如果是配置错误，显示提示
+                if (response.status === 500) {
+                    if (errorData.error && errorData.error.includes('未配置')) {
+                        console.error('❌ 服务器配置错误: GitHub Token 或 Gist ID 未配置');
+                        console.error('请在 Vercel Dashboard 中设置环境变量:');
+                        console.error('  - GITHUB_TOKEN');
+                        console.error('  - GITHUB_GIST_ID');
+                    } else if (errorData.error && errorData.error.includes('GitHub API')) {
+                        console.error('❌ GitHub API 错误，可能的原因:');
+                        console.error('  1. GitHub Token 无效或过期');
+                        console.error('  2. Gist ID 不正确');
+                        console.error('  3. Token 没有 gist 权限');
+                    }
+                } else if (response.status === 404) {
+                    console.error('❌ API 端点不存在 (404)');
+                    console.error('请检查:');
+                    console.error('  1. API 文件是否存在: /api/blogs.js');
+                    console.error('  2. Vercel 是否已正确部署');
+                } else if (response.status === 0 || response.status === 'failed') {
+                    console.error('❌ 网络错误或 CORS 问题');
+                    console.error('请检查网络连接和 CORS 配置');
+                }
             }
         } catch (error) {
-            console.warn('在线 API 获取失败，使用本地缓存:', error);
+            console.error('❌ 在线 API 获取时发生异常:');
+            console.error('错误类型:', error.name);
+            console.error('错误消息:', error.message);
+            console.error('错误堆栈:', error.stack);
+            
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                console.error('❌ 网络连接失败，可能的原因:');
+                console.error('  1. API 端点不存在');
+                console.error('  2. 服务器未运行');
+                console.error('  3. CORS 配置问题');
+                console.error('  4. 网络连接问题');
+            }
         }
         
         // 降级：从 localStorage 加载
+        console.log('🔄 降级到本地存储...');
         const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+        console.log('📦 从本地存储加载博客，数量:', blogs.length);
         displayBlogs(blogs);
     }
     
     // 显示博客列表
     function displayBlogs(blogs) {
+        console.log('displayBlogs 被调用，blogs:', blogs);
+        
+        if (!blogList) {
+            console.error('❌ blogList 元素不存在！请检查 HTML 中是否有 id="blogList" 的元素');
+            return;
+        }
+        
         blogList.innerHTML = '';
         
-        if (blogs.length === 0) {
+        if (!blogs || blogs.length === 0) {
+            console.log('博客列表为空');
             blogList.innerHTML = '<p class="blog-empty">还没有博客，点击 + 号添加第一篇博客吧！</p>';
             return;
         }
+        
+        // 确保 blogs 是数组
+        if (!Array.isArray(blogs)) {
+            console.error('❌ blogs 不是数组:', typeof blogs, blogs);
+            blogList.innerHTML = '<p class="blog-empty">数据格式错误：blogs 不是数组</p>';
+            return;
+        }
+        
+        console.log(`准备显示 ${blogs.length} 条博客`);
         
         // 按日期排序（最新的在前）
         blogs.sort((a, b) => new Date(b.date) - new Date(a.date));
         
         blogs.forEach((blog, index) => {
+            // 验证博客数据
+            if (!blog || !blog.title) {
+                console.warn(`跳过无效的博客条目 ${index}:`, blog);
+                return;
+            }
+            
+            try {
             const blogCard = document.createElement('div');
             blogCard.className = 'blog-card';
+                
+                // 确保日期格式正确
+                const blogDate = blog.date || new Date().toISOString().split('T')[0];
+                const blogContent = blog.content || '';
+                
             blogCard.innerHTML = `
                 <div class="blog-card-header">
                     <div>
                         <h3 class="blog-card-title">${escapeHtml(blog.title)}</h3>
-                        <span class="blog-card-date">${formatDate(blog.date)}</span>
+                            <span class="blog-card-date">${formatDate(blogDate)}</span>
                     </div>
                     <button class="blog-delete-btn" data-blog-id="${blog.id || Date.now() + index}" title="删除博客">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -605,11 +740,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     </button>
                 </div>
                 <div class="blog-card-content markdown-body">
-                    ${marked.parse(blog.content)}
+                        ${renderMarkdown(blogContent)}
                 </div>
             `;
             blogList.appendChild(blogCard);
+                console.log(`✅ 已添加博客: ${blog.title}`);
+            } catch (error) {
+                console.error(`❌ 添加博客时出错 (${blog.title}):`, error);
+            }
         });
+        
+        console.log(`✅ 共显示 ${blogList.children.length} 条博客`);
         
         // 为删除按钮添加事件监听
         document.querySelectorAll('.blog-delete-btn').forEach(btn => {
@@ -631,6 +772,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // 显示保存状态
+        const originalBtnText = saveBlogBtn.innerHTML;
+        saveBlogBtn.disabled = true;
+        saveBlogBtn.innerHTML = '保存中...';
+        
         // 先保存到本地（立即反馈）
         const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
         const newBlog = {
@@ -642,33 +788,9 @@ document.addEventListener('DOMContentLoaded', function() {
         blogs.push(newBlog);
         localStorage.setItem('blogs', JSON.stringify(blogs));
         
-        // 显示保存状态
-        const originalBtnText = saveBlogBtn.innerHTML;
-        saveBlogBtn.disabled = true;
-        saveBlogBtn.innerHTML = '保存中...';
-        
-        try {
-            // 尝试同步到在线 API
-            const response = await fetch(BLOG_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ blogs: blogs })
-            });
-            
-            if (response.ok) {
-                localStorage.setItem('blogs_last_sync', Date.now().toString());
-                console.log('博客已同步到服务器');
-            } else {
-                console.warn('在线同步失败，但已保存到本地:', response.status);
-            }
-        } catch (error) {
-            console.warn('在线同步失败，但已保存到本地:', error);
-        } finally {
-            saveBlogBtn.disabled = false;
-            saveBlogBtn.innerHTML = originalBtnText;
-        }
+        // 立即显示新保存的博客（不等待服务器响应）
+        console.log('保存博客到本地，博客数量:', blogs.length);
+        displayBlogs(blogs);
         
         // 清空表单
         document.getElementById('blogTitle').value = '';
@@ -679,8 +801,40 @@ document.addEventListener('DOMContentLoaded', function() {
         // 隐藏表单
         blogUploadForm.style.display = 'none';
         
-        // 重新加载博客列表
+        // 恢复按钮状态（在显示博客后立即恢复，不等待 API）
+        saveBlogBtn.disabled = false;
+        saveBlogBtn.innerHTML = originalBtnText;
+        
+        // 尝试同步到在线 API（后台进行，不影响用户体验）
+        (async () => {
+            try {
+                console.log('开始同步博客到服务器...');
+                const response = await fetch(BLOG_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ blogs: blogs })
+                });
+                
+                if (response.ok) {
+                    localStorage.setItem('blogs_last_sync', Date.now().toString());
+                    console.log('✅ 博客已同步到服务器');
+                    // 同步成功后，重新从服务器加载以确保数据一致性（延迟执行，避免覆盖刚显示的内容）
+                    setTimeout(() => {
+                        console.log('从服务器重新加载博客...');
         loadBlogs();
+                    }, 1000); // 延迟1秒，确保服务器已更新
+                } else {
+                    const errorData = await response.json().catch(() => ({ error: '未知错误' }));
+                    console.warn('⚠️ 在线同步失败，但已保存到本地:', response.status, errorData);
+                    // 即使同步失败，本地数据已经显示，用户可以看到
+                }
+            } catch (error) {
+                console.warn('⚠️ 在线同步失败，但已保存到本地:', error);
+                // 即使同步失败，本地数据已经显示，用户可以看到
+            }
+        })();
     }
     
     // 删除博客（在线同步）
@@ -690,9 +844,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // 先从本地删除（立即反馈）
-        const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
-        const filteredBlogs = blogs.filter(blog => String(blog.id || blog.title) !== String(blogId));
-        localStorage.setItem('blogs', JSON.stringify(filteredBlogs));
+            const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+            const filteredBlogs = blogs.filter(blog => String(blog.id || blog.title) !== String(blogId));
+            localStorage.setItem('blogs', JSON.stringify(filteredBlogs));
         
         try {
             // 尝试同步到在线 API
@@ -780,7 +934,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 注意：只在本地没有博客时初始化，避免覆盖在线数据
     const localBlogs = JSON.parse(localStorage.getItem('blogs') || '[]');
     if (localBlogs.length === 0) {
-        initializeSampleBlogs();
+    initializeSampleBlogs();
     }
     
     // 初始化：加载博客（优先从在线 API 加载）

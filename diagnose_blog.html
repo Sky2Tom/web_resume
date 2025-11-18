@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客 API 诊断工具</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #0066FF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background: #0052CC;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 600px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        .result.success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .result.info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 博客 API 诊断工具</h1>
+        <p>点击下面的按钮运行完整诊断，查看详细的诊断结果。</p>
+        <button onclick="runDiagnosis()">开始诊断</button>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+    
+    <script>
+        async function runDiagnosis() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = '正在诊断...\n\n';
+            
+            let output = '🔍 开始诊断博客 API...\n\n';
+            
+            // 1. 检查 API URL
+            const apiUrl = '/api/blogs';
+            output += '1️⃣ API URL: ' + apiUrl + '\n\n';
+            
+            // 2. 测试 API 连接
+            output += '2️⃣ 测试 API 连接...\n';
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                output += '   状态码: ' + response.status + '\n';
+                output += '   状态文本: ' + response.statusText + '\n';
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    output += '   ✅ API 连接成功！\n';
+                    output += '   博客数量: ' + (data.blogs?.length || 0) + '\n';
+                    if (data.blogs && data.blogs.length > 0) {
+                        output += '   博客列表:\n';
+                        data.blogs.forEach((blog, index) => {
+                            output += `      ${index + 1}. ID: ${blog.id}, 标题: ${blog.title || '(无标题)'}\n`;
+                        });
+                    }
+                    resultDiv.className = 'result success';
+                } else {
+                    const errorText = await response.text();
+                    output += '   ❌ API 返回错误\n';
+                    output += '   错误内容: ' + errorText.substring(0, 500) + '\n';
+                    
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        output += '   错误详情: ' + JSON.stringify(errorData, null, 2) + '\n';
+                    } catch (e) {
+                        output += '   无法解析错误 JSON\n';
+                    }
+                    
+                    // 根据状态码提供建议
+                    if (response.status === 404) {
+                        output += '\n   💡 建议: API 端点不存在，请检查:\n';
+                        output += '      - api/blogs.js 文件是否存在\n';
+                        output += '      - Vercel 是否已正确部署\n';
+                    } else if (response.status === 500) {
+                        output += '\n   💡 建议: 服务器错误，可能的原因:\n';
+                        output += '      - GitHub Token 或 Gist ID 未配置\n';
+                        output += '      - GitHub API 调用失败\n';
+                        output += '      - 检查 Vercel Functions 日志\n';
+                    } else if (response.status === 401 || response.status === 403) {
+                        output += '\n   💡 建议: 认证失败，请检查:\n';
+                        output += '      - GitHub Token 是否有效\n';
+                        output += '      - Token 是否有 gist 权限\n';
+                        output += '      - Gist ID 是否正确\n';
+                    }
+                    
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                output += '   ❌ 网络错误: ' + error.message + '\n';
+                output += '   错误类型: ' + error.name + '\n';
+                if (error.stack) {
+                    output += '   错误堆栈: ' + error.stack.substring(0, 300) + '\n';
+                }
+                output += '\n   💡 建议: 网络连接失败，可能的原因:\n';
+                output += '      - API 端点不存在\n';
+                output += '      - 服务器未运行\n';
+                output += '      - CORS 配置问题\n';
+                output += '      - 网络连接问题\n';
+                resultDiv.className = 'result error';
+            }
+            
+            // 3. 检查本地存储
+            output += '\n3️⃣ 检查本地存储...\n';
+            const localBlogs = localStorage.getItem('blogs');
+            if (localBlogs) {
+                try {
+                    const blogs = JSON.parse(localBlogs);
+                    output += '   ✅ 本地存储有数据\n';
+                    output += '   博客数量: ' + blogs.length + '\n';
+                    if (blogs.length > 0) {
+                        output += '   博客列表:\n';
+                        blogs.forEach((blog, index) => {
+                            output += `      ${index + 1}. ID: ${blog.id}, 标题: ${blog.title || '(无标题)'}\n`;
+                        });
+                    }
+                } catch (e) {
+                    output += '   ❌ 本地存储数据格式错误: ' + e.message + '\n';
+                }
+            } else {
+                output += '   ⚠️ 本地存储无数据\n';
+            }
+            
+            // 4. 检查 DOM 元素
+            output += '\n4️⃣ 检查 DOM 元素...\n';
+            const blogList = document.getElementById('blogList');
+            if (blogList) {
+                output += '   ✅ blogList 元素存在\n';
+                output += '   当前内容长度: ' + blogList.innerHTML.length + ' 字符\n';
+                if (blogList.innerHTML.length > 0) {
+                    output += '   前100个字符: ' + blogList.innerHTML.substring(0, 100) + '...\n';
+                }
+            } else {
+                output += '   ❌ blogList 元素不存在！\n';
+                output += '   💡 请检查 index.html 中是否有 <div id="blogList"></div>\n';
+            }
+            
+            // 5. 检查 API 配置
+            output += '\n5️⃣ 检查 API 配置...\n';
+            try {
+                // 尝试从 blog.js 中获取配置（如果已加载）
+                if (typeof BLOG_API_URL !== 'undefined') {
+                    output += '   API URL 配置: ' + BLOG_API_URL + '\n';
+                } else {
+                    output += '   ⚠️ 无法获取 API URL 配置（blog.js 可能未加载）\n';
+                }
+            } catch (e) {
+                output += '   ⚠️ 无法检查 API 配置\n';
+            }
+            
+            output += '\n✅ 诊断完成！\n';
+            output += '\n如果 API 连接失败，请:\n';
+            output += '1. 检查 Vercel Dashboard 中的环境变量配置\n';
+            output += '2. 查看 Vercel Functions 日志\n';
+            output += '3. 确认 GitHub Gist 和 Token 配置正确\n';
+            
+            resultDiv.textContent = output;
+        }
+        
+        // 页面加载时自动运行诊断（可选）
+        // window.addEventListener('load', () => {
+        //     setTimeout(runDiagnosis, 1000);
+        // });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客 API 测试工具</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #0066FF;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #0066FF;
+        }
+        button {
+            background: #0066FF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #0052CC;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .result.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status.success {
+            background: #28a745;
+            color: white;
+        }
+        .status.error {
+            background: #dc3545;
+            color: white;
+        }
+        .status.pending {
+            background: #ffc107;
+            color: #333;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 8px;
+            font-family: inherit;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+        .test-blog-form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 博客 API 测试工具</h1>
+        
+        <!-- 测试 1: 检查 API 连接 -->
+        <div class="test-section">
+            <h2>测试 1: 检查 API 连接 <span id="status1" class="status pending">待测试</span></h2>
+            <p>测试 API 端点是否可访问</p>
+            <button onclick="testConnection()">测试连接</button>
+            <div id="result1" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- 测试 2: 获取博客列表 -->
+        <div class="test-section">
+            <h2>测试 2: 获取博客列表 <span id="status2" class="status pending">待测试</span></h2>
+            <p>从服务器获取所有博客</p>
+            <button onclick="testGetBlogs()">获取博客</button>
+            <div id="result2" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- 测试 3: 创建测试博客 -->
+        <div class="test-section">
+            <h2>测试 3: 创建测试博客 <span id="status3" class="status pending">待测试</span></h2>
+            <p>创建一条测试博客记录</p>
+            <div class="test-blog-form">
+                <label>标题:</label>
+                <input type="text" id="testTitle" value="测试博客 - " placeholder="输入博客标题">
+                
+                <label>日期:</label>
+                <input type="text" id="testDate" value="" placeholder="YYYY-MM-DD">
+                
+                <label>内容 (Markdown):</label>
+                <textarea id="testContent" placeholder="输入博客内容（支持 Markdown）"># 测试博客
+
+这是一条**测试博客**记录，用于验证 API 功能。
+
+## 功能测试
+
+- ✅ 创建博客
+- ✅ 保存到服务器
+- ✅ 在线同步
+
+*创建时间: ${new Date().toLocaleString('zh-CN')}*</textarea>
+            </div>
+            <button onclick="testCreateBlog()">创建测试博客</button>
+            <div id="result3" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- 测试 4: 验证博客已保存 -->
+        <div class="test-section">
+            <h2>测试 4: 验证博客已保存 <span id="status4" class="status pending">待测试</span></h2>
+            <p>重新获取博客列表，确认新博客已保存</p>
+            <button onclick="testVerifyBlog()">验证保存</button>
+            <div id="result4" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- 完整测试流程 -->
+        <div class="test-section">
+            <h2>完整测试流程</h2>
+            <p>运行所有测试（按顺序）</p>
+            <button onclick="runAllTests()" style="background: #28a745;">运行完整测试</button>
+            <div id="resultAll" class="result" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = '/api/blogs';
+        
+        // 设置默认日期为今天
+        document.getElementById('testDate').value = new Date().toISOString().split('T')[0];
+        
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.textContent = message;
+        }
+        
+        function updateStatus(statusId, status) {
+            const element = document.getElementById(statusId);
+            element.className = `status ${status}`;
+            element.textContent = status === 'success' ? '✓ 成功' : status === 'error' ? '✗ 失败' : '待测试';
+        }
+        
+        async function testConnection() {
+            updateStatus('status1', 'pending');
+            showResult('result1', '正在测试连接...', 'info');
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok || response.status === 200) {
+                    updateStatus('status1', 'success');
+                    showResult('result1', `✅ API 连接成功！\n状态码: ${response.status}\nURL: ${API_URL}`, 'success');
+                } else {
+                    updateStatus('status1', 'error');
+                    showResult('result1', `❌ API 连接失败\n状态码: ${response.status}\n状态文本: ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                updateStatus('status1', 'error');
+                showResult('result1', `❌ 连接错误:\n${error.message}\n\n可能的原因:\n1. API 端点不存在\n2. 服务器未运行\n3. CORS 配置问题`, 'error');
+            }
+        }
+        
+        async function testGetBlogs() {
+            updateStatus('status2', 'pending');
+            showResult('result2', '正在获取博客列表...', 'info');
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const blogs = data.blogs || [];
+                    updateStatus('status2', 'success');
+                    showResult('result2', `✅ 成功获取博客列表！\n\n博客数量: ${blogs.length}\n\n博客列表:\n${JSON.stringify(blogs, null, 2)}`, 'success');
+                } else {
+                    const errorData = await response.json().catch(() => ({ error: response.statusText }));
+                    updateStatus('status2', 'error');
+                    showResult('result2', `❌ 获取博客失败\n状态码: ${response.status}\n错误信息:\n${JSON.stringify(errorData, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                updateStatus('status2', 'error');
+                showResult('result2', `❌ 获取博客时出错:\n${error.message}`, 'error');
+            }
+        }
+        
+        async function testCreateBlog() {
+            updateStatus('status3', 'pending');
+            const title = document.getElementById('testTitle').value.trim();
+            const date = document.getElementById('testDate').value;
+            const content = document.getElementById('testContent').value.trim();
+            
+            if (!title || !date || !content) {
+                updateStatus('status3', 'error');
+                showResult('result3', '❌ 请填写所有字段（标题、日期、内容）', 'error');
+                return;
+            }
+            
+            showResult('result3', '正在创建测试博客...', 'info');
+            
+            try {
+                // 先获取现有博客
+                const getResponse = await fetch(API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                let blogs = [];
+                if (getResponse.ok) {
+                    const data = await getResponse.json();
+                    blogs = data.blogs || [];
+                }
+                
+                // 创建新博客
+                const newBlog = {
+                    id: Date.now(),
+                    title: title,
+                    date: date,
+                    content: content
+                };
+                
+                blogs.push(newBlog);
+                
+                // 保存到服务器
+                const saveResponse = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ blogs: blogs })
+                });
+                
+                if (saveResponse.ok) {
+                    updateStatus('status3', 'success');
+                    showResult('result3', `✅ 测试博客创建成功！\n\n博客信息:\n${JSON.stringify(newBlog, null, 2)}\n\n已保存到服务器`, 'success');
+                } else {
+                    const errorData = await saveResponse.json().catch(() => ({ error: saveResponse.statusText }));
+                    updateStatus('status3', 'error');
+                    showResult('result3', `❌ 保存博客失败\n状态码: ${saveResponse.status}\n错误信息:\n${JSON.stringify(errorData, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                updateStatus('status3', 'error');
+                showResult('result3', `❌ 创建博客时出错:\n${error.message}`, 'error');
+            }
+        }
+        
+        async function testVerifyBlog() {
+            updateStatus('status4', 'pending');
+            showResult('result4', '正在验证博客是否已保存...', 'info');
+            
+            try {
+                // 等待1秒，确保服务器已更新
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                const response = await fetch(API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const blogs = data.blogs || [];
+                    
+                    // 查找测试博客（标题包含"测试博客"）
+                    const testBlogs = blogs.filter(blog => 
+                        blog.title && blog.title.includes('测试博客')
+                    );
+                    
+                    if (testBlogs.length > 0) {
+                        updateStatus('status4', 'success');
+                        showResult('result4', `✅ 验证成功！找到 ${testBlogs.length} 条测试博客\n\n测试博客列表:\n${JSON.stringify(testBlogs, null, 2)}`, 'success');
+                    } else {
+                        updateStatus('status4', 'error');
+                        showResult('result4', `⚠️ 未找到测试博客\n\n当前博客总数: ${blogs.length}\n所有博客:\n${JSON.stringify(blogs, null, 2)}`, 'error');
+                    }
+                } else {
+                    const errorData = await response.json().catch(() => ({ error: response.statusText }));
+                    updateStatus('status4', 'error');
+                    showResult('result4', `❌ 验证失败\n状态码: ${response.status}\n错误信息:\n${JSON.stringify(errorData, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                updateStatus('status4', 'error');
+                showResult('result4', `❌ 验证时出错:\n${error.message}`, 'error');
+            }
+        }
+        
+        async function runAllTests() {
+            showResult('resultAll', '开始运行完整测试流程...\n\n', 'info');
+            
+            // 测试 1: 连接
+            updateStatus('status1', 'pending');
+            await testConnection();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 测试 2: 获取博客
+            updateStatus('status2', 'pending');
+            await testGetBlogs();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 测试 3: 创建博客
+            updateStatus('status3', 'pending');
+            document.getElementById('testTitle').value = `测试博客 - ${new Date().toLocaleString('zh-CN')}`;
+            await testCreateBlog();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 测试 4: 验证博客
+            updateStatus('status4', 'pending');
+            await testVerifyBlog();
+            
+            // 汇总结果
+            const status1 = document.getElementById('status1').className.includes('success');
+            const status2 = document.getElementById('status2').className.includes('success');
+            const status3 = document.getElementById('status3').className.includes('success');
+            const status4 = document.getElementById('status4').className.includes('success');
+            
+            const allPassed = status1 && status2 && status3 && status4;
+            
+            showResult('resultAll', 
+                `完整测试完成！\n\n` +
+                `测试 1 (连接): ${status1 ? '✅ 通过' : '❌ 失败'}\n` +
+                `测试 2 (获取): ${status2 ? '✅ 通过' : '❌ 失败'}\n` +
+                `测试 3 (创建): ${status3 ? '✅ 通过' : '❌ 失败'}\n` +
+                `测试 4 (验证): ${status4 ? '✅ 通过' : '❌ 失败'}\n\n` +
+                `${allPassed ? '🎉 所有测试通过！API 工作正常。' : '⚠️ 部分测试失败，请检查错误信息。'}`,
+                allPassed ? 'success' : 'error'
+            );
+        }
+    </script>
+</body>
+</html>
+

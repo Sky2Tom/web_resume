@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试博客显示</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        button {
+            background: #0066FF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        pre {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 测试博客显示功能</h1>
+        <button onclick="testAPI()">1. 测试 API</button>
+        <button onclick="testDisplay()">2. 测试显示</button>
+        <button onclick="testElement()">3. 检查元素</button>
+        <button onclick="runAll()">运行所有测试</button>
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        let testData = null;
+        
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<h2>测试 1: API 连接</h2><pre>正在测试...</pre>';
+            
+            try {
+                const response = await fetch('/api/blogs');
+                const data = await response.json();
+                testData = data;
+                
+                resultDiv.innerHTML = `
+                    <h2 class="success">✅ 测试 1: API 连接成功</h2>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                    <p class="success">博客数量: ${data.blogs?.length || 0}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h2 class="error">❌ 测试 1: API 连接失败</h2>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        function testElement() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<h2>测试 3: 检查 DOM 元素</h2><pre>正在检查...</pre>';
+            
+            // 检查主页面中的 blogList 元素
+            const blogList = document.getElementById('blogList');
+            
+            if (blogList) {
+                resultDiv.innerHTML = `
+                    <h2 class="success">✅ 测试 3: blogList 元素存在</h2>
+                    <pre>元素: ${blogList.outerHTML.substring(0, 200)}...</pre>
+                    <p>父元素: ${blogList.parentElement?.tagName || 'N/A'}</p>
+                    <p>当前内容长度: ${blogList.innerHTML.length} 字符</p>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <h2 class="error">❌ 测试 3: blogList 元素不存在</h2>
+                    <p>请检查 index.html 中是否有 &lt;div id="blogList"&gt;&lt;/div&gt;</p>
+                    <p>注意：这个测试页面中可能没有 blogList 元素，这是正常的。</p>
+                `;
+            }
+        }
+        
+        function testDisplay() {
+            const resultDiv = document.getElementById('result');
+            
+            if (!testData) {
+                resultDiv.innerHTML = '<h2 class="error">❌ 请先运行"测试 API"</h2>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<h2>测试 2: 测试显示函数</h2><pre>正在测试...</pre>';
+            
+            // 模拟 displayBlogs 函数
+            const blogs = testData.blogs || [];
+            
+            if (blogs.length === 0) {
+                resultDiv.innerHTML = `
+                    <h2 class="error">❌ 测试 2: 博客数组为空</h2>
+                `;
+                return;
+            }
+            
+            let html = `
+                <h2 class="success">✅ 测试 2: 显示函数测试</h2>
+                <p class="info">博客数量: ${blogs.length}</p>
+                <div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 4px;">
+            `;
+            
+            blogs.forEach((blog, index) => {
+                html += `
+                    <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+                        <h3>${index + 1}. ${blog.title || '(无标题)'}</h3>
+                        <p><strong>ID:</strong> ${blog.id}</p>
+                        <p><strong>日期:</strong> ${blog.date || '(无日期)'}</p>
+                        <p><strong>内容:</strong> ${blog.content?.substring(0, 100) || '(无内容)'}...</p>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            html += '<p class="info">✅ 数据格式正确，应该可以正常显示</p>';
+            
+            resultDiv.innerHTML = html;
+        }
+        
+        async function runAll() {
+            await testAPI();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            testDisplay();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            testElement();
+        }
+        
+        // 自动运行
+        window.addEventListener('load', () => {
+            setTimeout(runAll, 500);
+        });
+    </script>
+</body>
+</html>
+

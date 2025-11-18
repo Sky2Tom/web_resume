@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>检查 API 响应</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        button {
+            background: #0066FF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        pre {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>检查 API 响应内容</h1>
+        <button onclick="checkAPI()">检查 API 响应</button>
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        async function checkAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>正在检查...</p>';
+            
+            try {
+                const response = await fetch('/api/blogs', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const responseText = await response.text();
+                let data;
+                
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    resultDiv.innerHTML = `
+                        <h2 class="error">❌ JSON 解析失败</h2>
+                        <p>原始响应:</p>
+                        <pre>${responseText}</pre>
+                    `;
+                    return;
+                }
+                
+                resultDiv.innerHTML = `
+                    <h2 class="success">✅ API 响应成功</h2>
+                    <p><strong>状态码:</strong> ${response.status}</p>
+                    <p><strong>响应大小:</strong> ${responseText.length} 字符</p>
+                    <h3>解析后的数据:</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                    <h3>博客数量:</h3>
+                    <p><strong>${data.blogs ? data.blogs.length : 0}</strong> 条博客</p>
+                    ${data.blogs && data.blogs.length > 0 ? `
+                        <h3>博客列表:</h3>
+                        <ul>
+                            ${data.blogs.map((blog, i) => `
+                                <li>
+                                    <strong>${i + 1}.</strong> 
+                                    ID: ${blog.id}, 
+                                    标题: ${blog.title || '(无标题)'}, 
+                                    日期: ${blog.date || '(无日期)'}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    ` : '<p class="error">⚠️ 博客数组为空或不存在</p>'}
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h2 class="error">❌ 请求失败</h2>
+                    <p>错误: ${error.message}</p>
+                `;
+            }
+        }
+        
+        // 自动运行
+        window.addEventListener('load', () => {
+            setTimeout(checkAPI, 500);
+        });
+    </script>
+</body>
+</html>
+
