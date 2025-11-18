@@ -1752,18 +1752,31 @@ strong, b {
     text-decoration: underline;
 }
 
+.blog-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.blog-edit-btn,
 .blog-delete-btn {
     background: none;
     border: none;
     color: var(--color-gray-400);
     cursor: pointer;
-    padding: 4px;
+    padding: 6px;
     border-radius: 4px;
     transition: var(--transition-base);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+}
+
+.blog-edit-btn:hover {
+    color: var(--color-black);
+    background-color: var(--color-gray-100);
 }
 
 .blog-delete-btn:hover {

@@ -569,6 +569,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveBlogBtn = document.getElementById('saveBlogBtn');
     const cancelBlogBtn = document.getElementById('cancelBlogBtn');
     const blogFileInput = document.getElementById('blogFile');
+    const blogFormTitle = blogUploadForm ? blogUploadForm.querySelector('h3') : null;
+    
+    // 编辑模式状态
+    let editingBlogId = null;
     
     // 检查必要的元素是否存在
     if (!blogList) {
@@ -737,12 +741,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h3 class="blog-card-title">${escapeHtml(blog.title)}</h3>
                         <span class="blog-card-date">${formatDate(blogDate)}</span>
                     </div>
+                    <div class="blog-card-actions">
+                        <button class="blog-edit-btn" data-blog-id="${blog.id || Date.now() + index}" title="编辑博客">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </button>
                     <button class="blog-delete-btn" data-blog-id="${blog.id || Date.now() + index}" title="删除博客">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         </svg>
                     </button>
+                    </div>
                 </div>
                 <div class="blog-card-content markdown-body">
                     ${renderMarkdown(blogContent)}
@@ -764,9 +776,63 @@ document.addEventListener('DOMContentLoaded', function() {
                 deleteBlog(blogId);
             });
         });
+        
+        // 为编辑按钮添加事件监听
+        document.querySelectorAll('.blog-edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const blogId = this.getAttribute('data-blog-id');
+                editBlog(blogId);
+            });
+        });
     }
     
-    // 保存博客（在线同步）
+    // 编辑博客
+    function editBlog(blogId) {
+        const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+        const blog = blogs.find(b => String(b.id) === String(blogId));
+        
+        if (!blog) {
+            alert('找不到要编辑的博客');
+            return;
+        }
+        
+        // 设置编辑模式
+        editingBlogId = blogId;
+        
+        // 更新表单标题
+        if (blogFormTitle) {
+            blogFormTitle.textContent = '编辑博客';
+        }
+        
+        // 填充表单数据
+        document.getElementById('blogTitle').value = blog.title || '';
+        document.getElementById('blogDate').value = blog.date || new Date().toISOString().split('T')[0];
+        
+        // 如果内容是 Markdown 链接格式，还原为原始 URL
+        let content = blog.content || '';
+        const linkMatch = content.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+        if (linkMatch && linkMatch[2] === linkMatch[1]) {
+            content = linkMatch[2]; // 还原为原始 URL
+        }
+        document.getElementById('blogContent').value = content;
+        document.getElementById('blogFile').value = '';
+        
+        // 更新保存按钮文本
+        saveBlogBtn.textContent = '更新';
+        
+        // 显示表单
+        blogUploadForm.style.display = 'block';
+        
+        // 滚动到表单位置
+        blogUploadForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // 聚焦到标题输入框
+        setTimeout(() => {
+            document.getElementById('blogTitle').focus();
+        }, 100);
+    }
+    
+    // 保存博客（在线同步）- 支持新建和编辑
     async function saveBlog() {
         const title = document.getElementById('blogTitle').value.trim();
         const date = document.getElementById('blogDate').value;
@@ -780,28 +846,58 @@ document.addEventListener('DOMContentLoaded', function() {
         // 显示保存状态
         const originalBtnText = saveBlogBtn.innerHTML;
         saveBlogBtn.disabled = true;
-        saveBlogBtn.innerHTML = '保存中...';
+        saveBlogBtn.innerHTML = editingBlogId ? '更新中...' : '保存中...';
         
         // 先保存到本地（立即反馈）
         const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
-        const newBlog = {
+        
+        if (editingBlogId) {
+            // 编辑模式：更新现有博客
+            const blogIndex = blogs.findIndex(b => String(b.id) === String(editingBlogId));
+            if (blogIndex !== -1) {
+                blogs[blogIndex] = {
+                    id: editingBlogId,
+                    title: title,
+                    date: date,
+                    content: content
+                };
+                console.log('更新博客:', blogs[blogIndex].title);
+            } else {
+                alert('找不到要编辑的博客');
+                saveBlogBtn.disabled = false;
+                saveBlogBtn.innerHTML = originalBtnText;
+                return;
+            }
+        } else {
+            // 新建模式：添加新博客
+            const newBlog = {
             id: Date.now(),
             title: title,
             date: date,
             content: content
-        };
-        blogs.push(newBlog);
+            };
+            blogs.push(newBlog);
+            console.log('添加新博客:', newBlog.title);
+        }
+        
         localStorage.setItem('blogs', JSON.stringify(blogs));
         
-        // 立即显示新保存的博客（不等待服务器响应）
+        // 立即显示更新后的博客（不等待服务器响应）
         console.log('保存博客到本地，博客数量:', blogs.length);
         displayBlogs(blogs);
         
-        // 清空表单
+        // 清空表单和编辑状态
         document.getElementById('blogTitle').value = '';
         document.getElementById('blogDate').value = '';
         document.getElementById('blogContent').value = '';
         document.getElementById('blogFile').value = '';
+        editingBlogId = null;
+        
+        // 恢复表单标题和按钮文本
+        if (blogFormTitle) {
+            blogFormTitle.textContent = '添加新博客';
+        }
+        saveBlogBtn.textContent = '保存';
         
         // 隐藏表单
         blogUploadForm.style.display = 'none';
@@ -901,17 +997,44 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 事件监听
     addBlogBtn.addEventListener('click', function() {
+        // 重置编辑状态
+        editingBlogId = null;
+        if (blogFormTitle) {
+            blogFormTitle.textContent = '添加新博客';
+        }
+        saveBlogBtn.textContent = '保存';
+        
+        // 切换表单显示
         blogUploadForm.style.display = blogUploadForm.style.display === 'none' ? 'block' : 'none';
         if (blogUploadForm.style.display === 'block') {
+            // 清空表单
+            document.getElementById('blogTitle').value = '';
+            document.getElementById('blogDate').value = '';
+            document.getElementById('blogContent').value = '';
+            document.getElementById('blogFile').value = '';
+            
             // 设置默认日期为今天
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('blogDate').value = today;
+            
+            // 聚焦到标题输入框
+            setTimeout(() => {
+                document.getElementById('blogTitle').focus();
+            }, 100);
         }
     });
     
     saveBlogBtn.addEventListener('click', saveBlog);
     
     cancelBlogBtn.addEventListener('click', function() {
+        // 重置编辑状态
+        editingBlogId = null;
+        if (blogFormTitle) {
+            blogFormTitle.textContent = '添加新博客';
+        }
+        saveBlogBtn.textContent = '保存';
+        
+        // 隐藏表单并清空
         blogUploadForm.style.display = 'none';
         document.getElementById('blogTitle').value = '';
         document.getElementById('blogDate').value = '';
