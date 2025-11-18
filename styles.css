@@ -2053,29 +2053,65 @@ strong, b {
     line-height: 1.6; /* 与正文保持一致 */
 }
 
+/* 代码块卡片样式 - 独立卡片设计 */
 .markdown-body pre {
     margin: 0; /* 重置默认 margin */
+    margin-top: 1em; /* 与上方内容保持间距 */
     margin-bottom: 1em; /* 统一使用 1em */
-    padding: 1em; /* 使用 em 单位 */
-    background-color: var(--color-gray-900);
-    border: 1px solid var(--color-gray-800);
-    border-radius: 8px;
+    padding: 1.25em 1.5em; /* 增加内边距，使代码更易读 */
+    background-color: #0d1117; /* GitHub Dark 主题背景色 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px; /* 更大的圆角，更现代的卡片感 */
     overflow-x: auto;
     line-height: 1.6; /* 与正文保持一致 */
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    /* 确保代码块独立于 section 背景 */
+    isolation: isolate;
+}
+
+/* 代码块滚动条样式 */
+.markdown-body pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+.markdown-body pre::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .markdown-body pre code {
     background: transparent;
     padding: 0;
     border: none;
-    color: #e5e5e5;
+    color: #e6edf3; /* GitHub Dark 主题文字色 */
     font-size: 0.875em;
     display: block;
     white-space: pre;
     word-break: normal;
     overflow-wrap: normal;
     line-height: 1.6; /* 与正文保持一致 */
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'Courier New', monospace;
+}
+
+/* 确保代码块在 section 背景中独立显示 */
+.markdown-body h2 ~ pre,
+.markdown-body h3 ~ pre {
+    background-color: #0d1117; /* 保持深色背景，不受 section 背景影响 */
+    margin-left: 0; /* 重置负边距 */
+    margin-right: 0;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
 }
 
 /* Markdown 链接样式 */

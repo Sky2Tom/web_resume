@@ -543,7 +543,27 @@ function renderMarkdown(markdownText) {
                 breaks: true, // 支持换行
                 gfm: true, // 支持 GitHub Flavored Markdown
                 headerIds: false, // 不生成 header ID
-                mangle: false // 不混淆邮箱地址
+                mangle: false, // 不混淆邮箱地址
+                highlight: function(code, lang) {
+                    // 如果 highlight.js 已加载，使用它进行代码高亮
+                    if (typeof hljs !== 'undefined') {
+                        if (lang && hljs.getLanguage(lang)) {
+                            try {
+                                return hljs.highlight(code, { language: lang }).value;
+                            } catch (err) {
+                                console.warn('代码高亮失败:', err);
+                            }
+                        }
+                        // 如果没有指定语言或语言不支持，尝试自动检测
+                        try {
+                            return hljs.highlightAuto(code).value;
+                        } catch (err) {
+                            console.warn('自动代码高亮失败:', err);
+                        }
+                    }
+                    // 如果 highlight.js 未加载，返回原始代码
+                    return code;
+                }
             });
             return marked.parse(markdownText);
         } catch (e) {
@@ -781,6 +801,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 contentDiv.style.display = 'block';
                 toggleIcon.style.transform = 'rotate(0deg)';
             }
+            
+            // 在内容插入 DOM 后，对代码块进行高亮处理
+            setTimeout(() => {
+                if (typeof hljs !== 'undefined') {
+                    const codeBlocks = contentDiv.querySelectorAll('pre code');
+                    codeBlocks.forEach(block => {
+                        hljs.highlightElement(block);
+                    });
+                }
+            }, 0);
             blogList.appendChild(blogCard);
                 console.log(`✅ 已添加博客: ${blog.title}`);
             } catch (error) {
