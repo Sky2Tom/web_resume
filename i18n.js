@@ -195,28 +195,17 @@
         if (!experience) return;
         
         const items = experience.querySelectorAll('.timeline-item');
+        const experienceKeys = ['tencent', 'chuangchao', 'nio']; // 按HTML中的顺序
+        
         items.forEach((item, index) => {
             const date = item.querySelector('.timeline-date');
             const company = item.querySelector('.timeline-company');
             const position = item.querySelector('.timeline-position');
             const details = item.querySelectorAll('.timeline-details li');
             
-            if (index === 0) {
-                // Chuangchao
-                const data = getTranslation('experience.chuangchao', lang);
-                if (data) {
-                    if (date && data.date) date.textContent = data.date;
-                    if (company && data.company) company.textContent = data.company;
-                    if (position && data.position) position.textContent = data.position;
-                    if (data.details && Array.isArray(data.details)) {
-                        details.forEach((li, i) => {
-                            if (data.details[i]) li.textContent = data.details[i];
-                        });
-                    }
-                }
-            } else if (index === 1) {
-                // NIO
-                const data = getTranslation('experience.nio', lang);
+            if (index < experienceKeys.length) {
+                const key = experienceKeys[index];
+                const data = getTranslation(`experience.${key}`, lang);
                 if (data) {
                     if (date && data.date) date.textContent = data.date;
                     if (company && data.company) company.textContent = data.company;

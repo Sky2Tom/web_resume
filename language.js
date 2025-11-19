@@ -24,7 +24,7 @@ const translations = {
         // 关于我
         about: {
             title: '关于我',
-            intro1: '我是东南大学硕士研究生，专业为人工智能与信息系统设计。在AI产品管理和软件开发方面有丰富经验，曾在蔚来汽车和创潮科技等知名企业工作。',
+            intro1: '我是东南大学硕士研究生，专业为人工智能与信息系统设计。在AI产品管理和软件开发方面有丰富经验，曾在蔚来汽车和腾讯等知名企业工作。',
             intro2: '我的专长涵盖AI算法开发、数据分析、项目管理和产品设计。持有PMP认证，并在IROS 2024等顶级会议发表研究论文。',
             education: '教育背景',
             educationValue: '硕士（保送）- 东南大学',
@@ -68,6 +68,20 @@ const translations = {
         // 工作经历
         experience: {
             title: '工作经历',
+            tencent: {
+                date: '2025.08 - 2025.12',
+                company: '腾讯科技（深圳）有限公司 - 深圳',
+                position: 'AI产品经理（技术背景），IEG部门',
+                details: [
+                    '负责腾讯企业级分布式数据库TcaplusDB的产品规划和AI功能设计，专注于游戏行业NoSQL数据库设计',
+                    '负责TcaplusDB新OMS数据库管理系统的产品迭代，包括存储层（智能数据存储分配、集群管理）、接入层（Proxy服务器分配、Server自动扩缩容）和交互层（UI界面设计、用户权限隔离）',
+                    '利用腾讯河源平台（Agent+Cursor）重新设计TcaplusDB产品中心，实现智能搜索和智能客服等AI功能',
+                    '开发全自动化多智能体工作流，覆盖"产品PRD → 页面设计 → 前端开发 → 部署"，节省80%开发工作量，产品迭代效率提升50%',
+                    '在数据库行业进行深度访谈，协助米哈游等客户构建安全可靠的数据存储平台',
+                    '负责新OMS页面优化，聚焦"数据监控"可视化指标的运营价值',
+                    '技术栈：Python, SQL, Linux, TcaplusClient, 河源平台, Agent+Cursor'
+                ]
+            },
             chuangchao: {
                 date: '2024.02 - 2025.02',
                 company: '创潮科技有限公司',
@@ -231,7 +245,7 @@ const translations = {
         // 关于我
         about: {
             title: 'About Me',
-            intro1: 'I am a Master\'s student at Southeast University, majoring in Artificial Intelligence and Information Systems Design. With a strong background in AI product management and software development, I have worked at leading companies like NIO and Chuangchao Technology.',
+            intro1: 'I am a Master\'s student at Southeast University, majoring in Artificial Intelligence and Information Systems Design. With a strong background in AI product management and software development, I have worked at leading companies like NIO and Tencent.',
             intro2: 'My expertise spans across AI algorithm development, data analysis, project management, and product design. I hold a PMP certification and have published research papers in top-tier conferences including IROS 2024.',
             education: 'Education',
             educationValue: 'Master\'s (保送) - Southeast University',
@@ -275,6 +289,20 @@ const translations = {
         // 工作经历
         experience: {
             title: 'Work Experience',
+            tencent: {
+                date: '2025.08 - 2025.12',
+                company: 'Tencent Technology (Shenzhen) Co., Ltd. - Shenzhen',
+                position: 'AI Product Manager (Technical Background), IEG Department',
+                details: [
+                    'Led product planning and AI feature design for Tencent\'s enterprise-grade distributed database, TcaplusDB, focusing on NoSQL database design for the gaming industry',
+                    'Responsible for product iterations of the new OMS database management system for TcaplusDB, including storage layer (intelligent data storage allocation, cluster management), access layer (Proxy server allocation, Server auto-scaling), and interaction layer (UI interface design, user permission isolation)',
+                    'Utilized Tencent\'s HeYuan platform (Agent+Cursor) to redesign the TcaplusDB product center, implementing AI-powered features such as intelligent search and smart customer service',
+                    'Developed a fully automated multi-agent workflow covering "Product PRD → Page Design → Front-End Development → Deployment," saving 80% of development effort and increasing product iteration efficiency by 50%',
+                    'Conducted in-depth interviews within the database industry and assisted clients like miHoYo in building secure and reliable data storage platforms',
+                    'Led page optimization for the new OMS, focusing on operational value of visualized metrics in "Data Monitoring"',
+                    'Technologies: Python, SQL, Linux, TcaplusClient, HeYuan Platform, Agent+Cursor'
+                ]
+            },
             chuangchao: {
                 date: '2024.02 - 2025.02',
                 company: 'Chuangchao Technology Co., Ltd.',
