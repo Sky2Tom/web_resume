@@ -4,8 +4,8 @@
 
 博客功能已升级为在线同步版本。现在所有用户提交的博客记录都会同步到服务器，所有访问页面的用户都能看到。
 
- GITHUB_TOKEN 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
- GITHUB_GIST_ID  b36c2b6abeb4e1501020094a820d8cf5
+ GITHUB_TOKEN ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ GITHUB_GIST_ID  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ## 技术实现
 
